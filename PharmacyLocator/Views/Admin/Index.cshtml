@@ -1,0 +1,34 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "My Admin";
+    ViewData["Name"] = "Dashboard";
+}
+<div id="main-content">
+    <div class="row">
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Medicines">
+                <span class="material-icons-outlined">local_pharmacy</span>
+                <p>@ViewBag.medCount</p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Locations">
+                <span class="material-icons-outlined">place</span>
+                <p>@ViewBag.locCount</p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Pharmacies">
+                <span class="material-icons-outlined">local_hospital</span>
+                <p>@ViewBag.pharmaCount </p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Users">
+                <span class="material-icons-outlined">groups</span>
+                <p>@ViewBag.userCount</p>
+            </div>
+        </div>
+    </div>
+</div>

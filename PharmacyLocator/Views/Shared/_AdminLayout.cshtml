@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
+</head>
+<body>
+    <div class="body">
+        <aside>
+            <div class="logo">
+                <img src="~/images/icon/logo.png" alt=""/>
+            </div>
+            <ul id="aside-menu">
+                <li>
+                    <a href="javascript:void(0)" id="dashboardLink" class="list-link active" onclick="loadPage('dashboard')">
+                        <i class="material-icons-outlined">grid_view</i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" id="medicineLink" class="list-link" onclick="loadPage('medicine')">
+                        <i class="material-icons-outlined">medication</i> <span>Medicine</span><i class="material-icons-outlined">expand_more</i>
+                    </a>
+                    <ul class="ca-dropdown" id="medicineTab">
+                        <li onclick="loadPage('medicine','add')">Add Medicine</li>
+                        <li onclick="loadPage('medicine','edit')">Edit Medicine</li>
+                        <li onclick="loadPage('medicine','remove')">Remove</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" id="locationLink" class="list-link" onclick="loadPage('location')">
+                        <i class="material-icons-outlined">place</i> <span>Location</span><i class="material-icons-outlined">expand_more</i>
+                    </a>
+                    <ul class="ca-dropdown" id="locationTab">
+                        <li onclick="loadPage('location','add')">Add Location</li>
+                        <li onclick="loadPage('location','edit')">Edit Location</li>
+                        <li onclick="loadPage('location','remove')">Remove</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" id="pharmacyLink" class="list-link" onclick="loadPage('pharmacy')">
+                        <i class="material-icons-outlined">local_pharmacy</i> <span>Pharmacy</span><i class="material-icons-outlined">expand_more</i>
+                    </a>
+                    <ul class="ca-dropdown" id="pharmacyTab">
+                        <li onclick="loadPage('pharmacy','add')">Add Pharmacy</li>
+                        <li onclick="loadPage('pharmacy','edit')">Edit Pharmacy</li>
+                        <li onclick="loadPage('pharmacy','remove')">Remove</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" id="storeLink" class="list-link" onclick="loadPage('store')">
+                        <i class="material-icons-outlined">archive</i> <span>Store</span><i class="material-icons-outlined">expand_more</i>
+                    </a>
+                    <ul class="ca-dropdown" id="storeTab">
+                        <li onclick="loadPage('store','add')">Add Store</li>
+                        <li onclick="loadPage('store','remove')">Remove</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:void(0)" id="leaderboardLink" class="list-link" onclick="loadPage('leaderboard')"><i class="material-icons-outlined">leaderboard</i> <span>LeaderBoard</span></a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" id="settingsLink" class="list-link" onclick="loadPage('password')"><i class="material-icons-outlined">vpn_key</i> <span>Change Password</span></a>
+                </li>
+                <li>
+                    <a href="../account/logout" id="settingsLink" class="list-link"><i class="material-icons-outlined">logout</i> <span>Logout</span></a>
+                </li>
+            </ul>
+        </aside>
+        <div class="content">
+            <nav>
+                <div class="nav-row">
+                    <div id="ca-collapse" style="padding: 1.2rem;cursor: pointer">
+                        <i class="material-icons-outlined">close</i>
+                    </div>
+                    <div class="page-title-con">
+                        <p class="page-title">@ViewBag.Name</p>
+                    </div>
+                    <div class="page-settings">
+
+                    </div>
+                </div>
+            </nav>
+            <div class="main" id="mainpage">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.0/dist/sweetalert2.min.js"></script>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

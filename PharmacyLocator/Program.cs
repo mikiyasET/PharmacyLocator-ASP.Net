@@ -1,6 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using PharmacyLocator;
 using PharmacyLocator.Models;
+using PharmacyLocator.Models.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,18 +14,26 @@ ConfigurationManager Configuration = builder.Configuration;
 builder.Services.AddDbContext<PharmaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbContext")));
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton<IConfigureOptions<CookieAuthenticationOptions>, ConfigureMyCookie>();
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
-
-builder.Services.AddAuthorization(options =>
-{
-    // By default, all incoming requests will be authorized according to the default policy.
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme) // Sets the default scheme to cookies
+            .AddCookie(options =>
+            {
+                options.AccessDeniedPath = "/account/denied";
+                options.LoginPath = "/account/login";
+            });
 builder.Services.AddRazorPages();
 
-var app = builder.Build();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IMedicineService, MedicineService>();
+builder.Services.AddScoped<IPharmacyService, PharmacyService>();
+builder.Services.AddScoped<IRecordService, RecordService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -33,6 +46,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+var cookiePolicyOptions = new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+};
+app.UseCookiePolicy(cookiePolicyOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,20 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PharmacyLocator.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PharmacyLocator.Models
 {
-    public class Store
+    public class Store : IEntityBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [ForeignKey("Medicine")]
-        public int? MedicineId { get; set; }
+        public long? MedicineId { get; set; }
         public virtual Medicine Medicine { get; set; }
 
         [ForeignKey("Pharmacy")]
-        public int? PharmacyId { get; set; }
+        public long? PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
 
         public double Price { get; set; }

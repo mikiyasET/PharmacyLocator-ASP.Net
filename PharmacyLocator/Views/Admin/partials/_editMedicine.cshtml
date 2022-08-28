@@ -1,0 +1,50 @@
+﻿<p id="main-title">Modify Medicine</p>
+<form method="post" id="imageUploadForm" enctype="multipart/form-data">
+    <input type="hidden" name="submit" value="editMedicine">
+    <input type="hidden" name="id" value="<?php echo $id; ?>">
+    <div id="main-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label for="MedicineInput" class="form-label">Medicine Name</label>
+                    <input type="text" name="name" class="form-control" id="MedicineInput" tabindex="1" placeholder="Name" value="" >
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="decInput" class="form-label">Description</label>
+                    <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="Medicine descriptions ..." ></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <img src="~/assets/images/medicines/<?php echo $img; ?>" alt="Image" style="width: auto;height: 15.5rem;">
+                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="2">
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button class="btn ca-btn mt-3" type="submit" name="edit" >Edit</button>
+        </div>
+
+        <div class="mt-5">
+            <table id="pharmacyTable" class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Added By</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</form>

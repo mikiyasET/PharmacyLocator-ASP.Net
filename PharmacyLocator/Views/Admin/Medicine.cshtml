@@ -1,0 +1,17 @@
+﻿@using PharmacyLocator.Models.Services
+@{
+    Layout = "";
+}
+
+@if (ViewBag.data == "add") {
+    <partial name="partials/_addMedicine" />
+}
+else if (ViewBag.data == "edit") {
+    <partial name="partials/_editMedicine" />
+}
+else if (ViewBag.data == "remove") {
+    <partial name="partials/_removeMedicine" />
+}
+else {
+    <partial name="partials/_viewMedicine" />
+}

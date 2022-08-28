@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@{
+    Layout = "";
+}
+
+New = @(ViewContext.RouteData.Values["func"])
+<h2>HttpContext.User.Claims @User.Claims.ToList()[0].Type - @User.Claims.ToList()[0].Value </h2>
+
+<dl>
+    @foreach (var claim in User.Claims)
+    {
+        <dt>@claim.Type</dt>
+        <dd>@claim.Value</dd>
+    }
+</dl>
+
+<h2>AuthenticationProperties</h2>
+
+<dl>
+    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+    {
+        <dt>@prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+</dl>
+<div id="main-content">
+    <div class="row">
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Medicines">
+                <span class="material-icons-outlined">local_pharmacy</span>
+                <p>@ViewBag.medCount</p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Locations">
+                <span class="material-icons-outlined">place</span>
+                <p>@ViewBag.locCount</p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Pharmacies">
+                <span class="material-icons-outlined">local_hospital</span>
+                <p>@ViewBag.pharmaCount </p>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="dash-box" title="Users">
+                <span class="material-icons-outlined">groups</span>
+                <p>@ViewBag.userCount</p>
+            </div>
+        </div>
+    </div>
+</div>
