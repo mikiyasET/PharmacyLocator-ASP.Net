@@ -4,16 +4,16 @@
 }
 
 @if (ViewBag.data == "add") {
-    <partial name="partials/_addMedicine" />
+    <partial name="partials/medicine/_addMedicine" />
 }
 else if (ViewBag.data == "edit") {
-    <partial name="partials/_editMedicine" />
+    <partial name="partials/medicine/_editMedicine" />
 }
 else if (ViewBag.data == "remove") {
-    <partial name="partials/_removeMedicine" />
+    <partial name="partials/medicine/_removeMedicine" />
 }
 else {
-    <partial name="partials/_viewMedicine" />
+    <partial name="partials/medicine/_viewMedicine" />
 }
 
 <script>

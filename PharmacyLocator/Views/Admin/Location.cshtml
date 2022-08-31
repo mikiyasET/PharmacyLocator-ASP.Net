@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "";
+}
+
+@if (ViewBag.data == "add")
+{
+    <partial name="partials/location/_addLocation" />
+}
+else if (ViewBag.data == "edit")
+{
+    <partial name="partials/location/_editLocation" />
+}
+else if (ViewBag.data == "remove")
+{
+    <partial name="partials/location/_removeLocation" />
+}
+else
+{
+    <partial name="partials/location/_viewLocation" />
+}

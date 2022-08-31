@@ -5,6 +5,7 @@ using PharmacyLocator.Models;
 using PharmacyLocator.Models.Services;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace PharmacyLocator.Controllers
 {
@@ -37,7 +38,6 @@ namespace PharmacyLocator.Controllers
             return View();
         }
         
-        [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
             _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
@@ -47,8 +47,7 @@ namespace PharmacyLocator.Controllers
             ViewBag.userCount = await _userservice.CountAsync();
             return View();
         }
-        
-        [HttpGet]
+
         public async Task<IActionResult> Medicine()
         {
             _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
@@ -73,6 +72,30 @@ namespace PharmacyLocator.Controllers
             }
         }
 
+        public async Task<IActionResult> Location()
+        {
+            _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
+            var data = Request.Query["func"];
+            long id = string.IsNullOrEmpty(Request.Query["id"]) ? 0 : Int64.Parse(Request.Query["id"]);
+            ViewBag.data = data;
+            ViewBag.id = id;
+            if (data == "add") { return View(); }
+            else if (data == "edit")
+            {
+                var locData = await _locservice.GetAllAsync();
+                return View(locData);
+            }
+            else if (data == "remove")
+            {
+                var locData = await _locservice.GetAllAsync();
+                return View(locData);
+            }
+            else
+            {
+                var locData = await _locservice.GetAllAsync();
+                return View(locData);
+            }
+        }
 
         [HttpPost]
         public async Task<string> CreateMedicine(Medicine medicine, IFormFile Image)
