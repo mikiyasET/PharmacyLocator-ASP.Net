@@ -138,6 +138,103 @@ function loadPage(location, data = '', id = '') {
     });
 }
 
+function remove(to, id) {
+    let path = "admin/";
+    showLoading()
+    let name = ''
+    let tab = ''
+    let load = ''
+    switch (to) {
+        case 'medicine':
+            tab = 'removeMedicine'
+            name = 'medicine'
+            load = 'medicine'
+            break
+        case 'location':
+            tab = 'removeLocation'
+            name = 'location'
+            load = 'location'
+            break
+        case 'pharmacy':
+            tab = 'removePharmacy'
+            name = 'pharmacy'
+            load = 'pharmacy'
+            break
+        case 'store':
+            tab = 'removeStore'
+            name = 'store'
+            load = 'store'
+            break
+        default:
+            name = 'unknown thing'
+    }
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You're about to delete this " + name + "!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let request = $.ajax({
+                url: path + "RemoveThem",
+                type: "DELETE",
+                data: {
+                    id: id,
+                    submit: tab
+                },
+                dataType: "text"
+            });
+            request.done(function (output) {
+                console.log(output);
+                switch (output) {
+                    case 'success':
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Deleted successfully'
+                        })
+                        loadPage(load, 'remove')
+                        break;
+                    case 'failure':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Not deleted, try again later!'
+                        })
+                        break;
+                    case 'unknownID':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'something went wrong, refresh the page!'
+                        })
+                        break;
+                }
+                hideLoading()
+            });
+            request.fail(function (jqXHR, textStatus) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Request failed: ' + textStatus
+                })
+                hideLoading()
+            });
+        }
+        else {
+            hideLoading()
+        }
+    })
+}
+
+
+
+function showLoading() {
+    $('#mainpage').addClass('loading')
+}
+function hideLoading() {
+    $('#mainpage').removeClass('loading')
+}
+
 function collapseAll($except = null) {
     switch ($except) {
         case 'medicine':
@@ -187,7 +284,6 @@ function collapseAll($except = null) {
             break;
     }
 }
-
 var links = document.querySelectorAll('.list-link');
 
 links.forEach((e) => {

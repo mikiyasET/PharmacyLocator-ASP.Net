@@ -15,3 +15,84 @@ else if (ViewBag.data == "remove") {
 else {
     <partial name="partials/_viewMedicine" />
 }
+
+<script>
+    $(document).ready(function () {
+        $('#pharmacyTable').DataTable();
+        $("#imageUploadForm").on('submit', (function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "admin/CreateMedicine",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function () {
+                    showLoading()
+
+                    $('button[type="submit"]').prop('disabled', true);
+                },
+                success: function (data) {
+                    hideLoading()
+                    $('button[type="submit"]').prop('disabled', false);
+                    console.log(data)
+                    switch (data) {
+                        case 'success':
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Medicine added successfully'
+                            })
+                            $("#imageUploadForm")[0].reset();
+                            loadPage('medicine', 'add')
+                            break;
+                        case 'editsuccess':
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Medicine modified successfully'
+                            })
+                            $("#imageUploadForm")[0].reset();
+                            loadPage('medicine', 'edit')
+                            break;
+                        case 'nameExist':
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Name already exists'
+                            })
+                            break;
+                        case 'imageError':
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Please select an image.'
+                            })
+                            break;
+                        case 'NameEmpty':
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Please enter Medicine Name it\'s required.'
+                            })
+                            break;
+                        case 'unknownTask':
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Please refresh the tab and try again.'
+                            })
+                            break;
+                        default:
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Unexpexted Error'
+                            })
+                    }
+                },
+                error: function (e) {
+                    hideLoading()
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Internal Error'
+                    })
+                }
+            });
+        }));
+    });
+</script>

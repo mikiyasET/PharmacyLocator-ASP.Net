@@ -12,7 +12,8 @@ namespace PharmacyLocator.Models
         public DbSet<Store> stores { get; set; }
         public DbSet <Location> locations { get; set; }
 
-        public PharmaDbContext(DbContextOptions<PharmaDbContext> options) : base(options) { }
+        public PharmaDbContext(DbContextOptions<PharmaDbContext> options) : base(options) { 
+        }
 
     }
 }

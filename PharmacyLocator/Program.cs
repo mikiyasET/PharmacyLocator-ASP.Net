@@ -11,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager Configuration = builder.Configuration;
 // Add services to the container.
-builder.Services.AddDbContext<PharmaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbContext")));
+builder.Services.AddDbContext<PharmaDbContext>(options => {
+    options.UseSqlServer(Configuration.GetConnectionString("DbContext"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IConfigureOptions<CookieAuthenticationOptions>, ConfigureMyCookie>();
@@ -32,6 +35,7 @@ builder.Services.AddScoped<IPharmacyService, PharmacyService>();
 builder.Services.AddScoped<IRecordService, RecordService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -57,6 +61,5 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
+    pattern: "{controller=Admin}/{action=Index}/{id?}");
 app.Run();

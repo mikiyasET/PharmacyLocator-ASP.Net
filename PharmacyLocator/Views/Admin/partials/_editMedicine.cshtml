@@ -1,13 +1,32 @@
-﻿<p id="main-title">Modify Medicine</p>
+﻿@using PharmacyLocator.Models.Services
+@model IEnumerable<PharmacyLocator.Models.Medicine>
+@inject IAdminService adminservice
+@inject IMedicineService medservice
+
+@{
+    Medicine med = await medservice.GetByIdAsync(ViewBag.id);
+    var name = "";
+    var img = "picture.png";
+    var desc = "";
+    var status = "";
+    if (med != null) {
+        name = med.Name;
+        img = med.Image;
+        desc = med.Description;
+    }else {
+        status = "disabled";
+    }
+}
+<p id="main-title">Modify Medicine</p>
 <form method="post" id="imageUploadForm" enctype="multipart/form-data">
     <input type="hidden" name="submit" value="editMedicine">
-    <input type="hidden" name="id" value="<?php echo $id; ?>">
+    <input type="hidden" name="id" value="@ViewBag.id">
     <div id="main-content">
         <div class="row">
             <div class="col-md-12">
                 <div class="mb-3">
                     <label for="MedicineInput" class="form-label">Medicine Name</label>
-                    <input type="text" name="name" class="form-control" id="MedicineInput" tabindex="1" placeholder="Name" value="" >
+                    <input type="text" name="name" class="form-control" id="MedicineInput" tabindex="1" placeholder="Name" value="@name" @status>
                 </div>
 
             </div>
@@ -15,19 +34,19 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="decInput" class="form-label">Description</label>
-                    <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="Medicine descriptions ..." ></textarea>
+                    <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="Medicine descriptions ..." @status>@desc</textarea>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <img src="~/assets/images/medicines/<?php echo $img; ?>" alt="Image" style="width: auto;height: 15.5rem;">
-                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="2">
+                    <img src="~/images/medicines/@img" alt="Image" style="width: auto;height: 15.5rem;">
+                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="2" @status>
                 </div>
             </div>
         </div>
 
         <div class="d-grid gap-2">
-            <button class="btn ca-btn mt-3" type="submit" name="edit" >Edit</button>
+            <button class="btn ca-btn mt-3" type="submit" name="edit" @status>Edit</button>
         </div>
 
         <div class="mt-5">
@@ -41,7 +60,20 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    @{
+                        int counter = 0;
+                    }
+                    @foreach (var medicine in Model)
+                    {
+                        counter++;
+                        var adminName = (await adminservice.GetByIdAsync(medicine.AddBy)).Name;
+                        <tr onclick="loadPage('medicine','edit','@medicine.Id')">
+                            <td>@counter</td>
+                            <td>@medicine.Name</td>
+                            <td>@medicine.Description.Substring(0,medicine.Description.Length > 30 ? 30 : medicine.Description.Length)</td>
+                            <td>@adminName</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

@@ -1,5 +1,6 @@
 ﻿@model PharmacyLocator.Models.Medicine
-<form asp-controller="admin" asp-action="create" method="post" id="imageUploadForm" enctype="multipart/form-data">
+<form asp-controller="admin" asp-action="CreateMedicine" method="post" id="imageUploadForm" enctype="multipart/form-data">
+    <input type="hidden" name="submit" value="addMedicine">
     <div id="main-content">
         <div class="row">
             <div class="col-md-6">

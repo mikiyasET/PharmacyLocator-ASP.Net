@@ -1,5 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using PharmacyLocator.Models.Services
+@model IEnumerable<PharmacyLocator.Models.Medicine>
+@inject IAdminService adminservice
 @{
+    Layout = "";
+}
+@try{
+<div id="main-content">
+    <div class="mt-5">
+        <table id="pharmacyTable" class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Added By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int counter = 0;
+                }
+                @foreach (var medicine in Model)
+                {
+                    counter++;
+                    var adminName = (await adminservice.GetByIdAsync(medicine.AddBy)).Name;
+                    <tr onclick="remove('medicine','@medicine.Id')">
+                        <td>@counter</td>
+                        <td>@medicine.Name</td>
+                        <td>@medicine.Description.Substring(0,medicine.Description.Length > 30 ? 30 : medicine.Description.Length)</td>
+                        <td>@adminName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+}catch(Exception e) {
+    <p>Err: @e</p>
 }
