@@ -1,28 +1,25 @@
 ﻿@model PharmacyLocator.Models.Medicine
-<form asp-controller="admin" asp-action="CreateMedicine" method="post" id="imageUploadForm" enctype="multipart/form-data">
-    <input type="hidden" name="submit" value="addMedicine">
-    <div id="main-content">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label asp-for="Name" for="MedicineInput" class="form-label">Medicine Name</label>
-                    <input asp-for="Name" type="text" name="name" class="form-control" id="MedicineInput" tabindex="1" placeholder="Name">
-                </div>
+<div id="main-content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="Name" for="MedicineInput" class="form-label">Medicine Name</label>
+                <input asp-for="Name" type="text" name="name" class="form-control" id="MedicineInput" tabindex="1" placeholder="Name">
+            </div>
 
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label asp-for="Image" for="imgInput" class="form-label">Image</label>
-                    <input asp-for="Image" type="file" name="image" class="form-control" id="imgInput" tabindex="2">
-                </div>
-            </div>
         </div>
-        <div class="mb-3">
-            <label asp-for="Description" for="decInput" class="form-label">Description</label>
-            <textarea asp-for="Description" name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="Medicine descriptions ..."></textarea>
-        </div>
-        <div class="d-grid gap-2">
-            <button class="btn ca-btn mt-3" type="submit" name="add">Add</button>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="Image" for="imgInput" class="form-label">Image</label>
+                <input asp-for="Image" type="file" name="image" class="form-control" id="imgInput" tabindex="2">
+            </div>
         </div>
     </div>
-</form>
+    <div class="mb-3">
+        <label asp-for="Description" for="decInput" class="form-label">Description</label>
+        <textarea asp-for="Description" name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="Medicine descriptions ..."></textarea>
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn ca-btn mt-3" type="button" name="add" onclick="add('medicine')">Add</button>
+    </div>
+</div>

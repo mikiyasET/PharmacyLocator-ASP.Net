@@ -30,11 +30,11 @@ namespace PharmacyLocator.Models
 
         public int? Lng { get; set; }
         public int? Lat { get; set; }
-        
+        public string? Image { get; set; }
+
         [StringLength(13,MinimumLength = 10)]
         [Display(Name = "Phone")]
         public string? Phone { get; set; }
-
         [ForeignKey("Location")]
         public long? LocationId { get; set; }
         public virtual Location Location { get; set; }

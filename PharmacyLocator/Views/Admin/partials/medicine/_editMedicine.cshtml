@@ -18,9 +18,7 @@
     }
 }
 <p id="main-title">Modify Medicine</p>
-<form method="post" id="imageUploadForm" enctype="multipart/form-data">
-    <input type="hidden" name="submit" value="editMedicine">
-    <input type="hidden" name="id" value="@ViewBag.id">
+
     <div id="main-content">
         <div class="row">
             <div class="col-md-12">
@@ -46,7 +44,7 @@
         </div>
 
         <div class="d-grid gap-2">
-            <button class="btn ca-btn mt-3" type="submit" name="edit" @status>Edit</button>
+            <button class="btn ca-btn mt-3" type="button" name="edit" onclick="modify('medicine','@ViewBag.id')" @status>Edit</button>
         </div>
 
         <div class="mt-5">
@@ -67,10 +65,12 @@
                     {
                         counter++;
                         var adminName = (await adminservice.GetByIdAsync(medicine.AddBy)).Name;
+                        var meddisc = medicine.Description == null ? "" : medicine.Description.Substring(0, medicine.Description.Length > 30 ? 30 : medicine.Description.Length);
+
                         <tr onclick="loadPage('medicine','edit','@medicine.Id')">
                             <td>@counter</td>
                             <td>@medicine.Name</td>
-                            <td>@medicine.Description.Substring(0,medicine.Description.Length > 30 ? 30 : medicine.Description.Length)</td>
+                            <td>@meddisc</td>
                             <td>@adminName</td>
                         </tr>
                     }
@@ -79,4 +79,3 @@
         </div>
 
     </div>
-</form>

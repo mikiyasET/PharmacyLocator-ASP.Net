@@ -1,0 +1,12 @@
+﻿@model PharmacyLocator.Models.Location
+
+<p id="main-title">Add Location</p>
+<div id="main-content">
+    <div class="mb-3">
+        <label asp-for="Name" for="LocationInput" class="form-label"></label>
+        <input asp-for="Name" type="text" name="name" class="form-control" id="LocationInput" tabindex="1" placeholder="Name">
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn ca-btn mt-3" type="button" onclick="add('location')">Add</button>
+    </div>
+</div>

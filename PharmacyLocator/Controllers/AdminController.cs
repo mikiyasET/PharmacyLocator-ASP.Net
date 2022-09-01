@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using PharmacyLocator.Models;
 using PharmacyLocator.Models.Services;
 using System.Net.Http.Headers;
@@ -19,13 +20,15 @@ namespace PharmacyLocator.Controllers
         private readonly ILocationService _locservice;
         private readonly IPharmacyService _pharmaservice;
         private readonly IUserService _userservice;
-        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce,IWebHostEnvironment webHostEnvironment)
         {
             _service = service;
             _medservice = medsevice;
             _locservice = locsevice;
             _pharmaservice = pharmaService;
             _userservice = userserivce;
+            _webHostEnvironment = webHostEnvironment;
         }
         
         public async Task<IActionResult> Index()
@@ -98,8 +101,9 @@ namespace PharmacyLocator.Controllers
         }
 
         [HttpPost]
-        public async Task<string> CreateMedicine(Medicine medicine, IFormFile Image)
+        public async Task<string> ModMedicine(Medicine medicine,IFormFile Image, string submit)
         {
+
             _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
 
             if (string.IsNullOrEmpty(medicine.Name))
@@ -108,69 +112,110 @@ namespace PharmacyLocator.Controllers
             }
             else
             {
-                var submit = this.Request.Form.ToList()[0].Key;
-                var task = this.Request.Form.ToList()[0].Value.ToString();
-                if (submit == "submit")
+                switch (submit)
                 {
-                    switch (task)
-                    {
-                        case "addMedicine":
-                            if (Image == null)
+                    case "addMedicine":
+                        if (Image == null)
+                        {
+                            return "imageError";
+                        }
+                        else
+                        {
+                            if (!(await _medservice.NameExist(medicine)))
                             {
-                                return "imageError";
-                            }
-                            else
-                            {
-                                Random random = new Random();
-                                int randomNum = random.Next(10000, 99999);
-                                var filename = "[" + randomNum + "] " + ContentDispositionHeaderValue.Parse(Image.ContentDisposition).FileName.Trim('"');
-                                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "medicines", "[" + randomNum + "] " + Image.FileName);
-                                using (System.IO.Stream stream = new FileStream(path, FileMode.Create))
-                                {
-                                    await Image.CopyToAsync(stream);
-                                }
-                                medicine.Image = filename;
+                                string folder = "images/medicines/";
+                                string file = Guid.NewGuid().ToString() + Image.FileName;
+                                folder += file;
+                                medicine.Image = file;
+                                string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+                                await Image.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                                 medicine.AddBy = _userId;
-
                                 await _medservice.AddAsync(medicine);
                                 return "success";
                             }
-                            break;
-                        case "editMedicine":
-                            if (Image == null)
-                            {
-                                Medicine mymedicine = await _medservice.GetByIdAsync(medicine.Id);
-                                medicine.Image = mymedicine.Image;
-                                medicine.AddBy = _userId;
-                                await _medservice.UpdateAsync(medicine.Id, medicine);
-                                return "editsuccess";
-                            }
                             else
                             {
-                                Random random = new Random();
-                                int randomNum = random.Next(10000, 99999);
-                                _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
-                                var filename = "[" + randomNum + "] " + ContentDispositionHeaderValue.Parse(Image.ContentDisposition).FileName.Trim('"');
-                                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "medicines", "[" + randomNum + "] " + Image.FileName);
-                                using (System.IO.Stream stream = new FileStream(path, FileMode.Create))
-                                {
-                                    await Image.CopyToAsync(stream);
-                                }
-                                medicine.Image = filename;
-                                medicine.AddBy = _userId;
-                                await _medservice.UpdateAsync(medicine.Id, medicine);
-                                return "editsuccess";
+                                return "nameExist";
                             }
-                            break;
+                        }
+                        case "editMedicine":
+                            Medicine mymedicine = await _medservice.GetByIdAsync(medicine.Id);
+                            if (await _medservice.NameExist(medicine, true)) { 
+                                if (Image == null)
+                                {
+                                    medicine.Image = mymedicine.Image;
+                                    medicine.AddBy = _userId;
+                                    await _medservice.UpdateAsync(medicine);
+                                    return "editsuccess";
+                                }
+                                else
+                                {
+                                    string folder = "images/medicines/";
+                                    string file = "[" + Guid.NewGuid().ToString() + "] " + Image.FileName;
+                                    folder += file;
+                                    medicine.Image = file;
+                                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+                                    await Image.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+                                    medicine.AddBy = _userId;
+                                    var fullPath = _webHostEnvironment.WebRootPath + "\\images\\medicines\\" + mymedicine.Image;
+                                    if (System.IO.File.Exists(fullPath))
+                                    {
+                                        System.GC.Collect();
+                                        System.GC.WaitForPendingFinalizers();
+                                        System.IO.File.Delete(fullPath);
+                                    }
+                                    await _medservice.UpdateAsync(medicine);
+                                    return "editsuccess";
+                                }
+                            }else {
+                                return "nameExist";
+                            }
                         default:
                             return "unknownTask";
-                            break;
                     }
-                    
-                }else
+            }
+        }
+
+        [HttpPost]
+        public async Task<string> ModLocation(Location location,string submit)
+        {
+            try {
+                switch (submit)
                 {
-                    return "error";
+                    case "addLocation":
+                        if (!(await _locservice.NameExist(location)))
+                        {
+                            await _locservice.AddAsync(location);
+                            return "locationSuccess";
+                        }
+                        else
+                        {
+                            return "locationNameExist";
+                        }
+                    case "editLocation":
+                        Location loc = await _locservice.GetByIdAsync(location.Id);
+                        if (loc != null)
+                        {
+                            if (!(await _locservice.NameExist(location)))
+                            {
+                                await _locservice.UpdateAsync(location);
+                                return "editLocationSuccess";
+                            }else
+                            {
+                                return "locationNameExist";
+                            }
+                        }
+                        else
+                        {
+                            return "editLocationUnknownID";
+                        }
+                    default:
+                        return "failure";
                 }
+            }
+            catch(Exception e)
+            {
+                return "failure";
             }
         }
 
@@ -182,8 +227,17 @@ namespace PharmacyLocator.Controllers
                 switch(submit)
                 {
                     case "removeMedicine":
-                        if (await _medservice.GetByIdAsync(id) != null)
+                        Medicine mymedicine = await _medservice.GetByIdAsync(id);
+
+                        if (mymedicine != null)
                         {
+                            var fullPath = _webHostEnvironment.WebRootPath + "\\images\\medicines\\" + mymedicine.Image;
+                            if (System.IO.File.Exists(fullPath))
+                            {
+                                System.GC.Collect();
+                                System.GC.WaitForPendingFinalizers();
+                                System.IO.File.Delete(fullPath);
+                            }
                             await _medservice.DeleteAsync(id);
                             return "success";
                         }
@@ -191,7 +245,16 @@ namespace PharmacyLocator.Controllers
                         {
                             return "unknownID";
                         }
-                        break;
+                    case "removeLocation":
+                        if (await _locservice.GetByIdAsync(id) != null)
+                        {
+                            await _locservice.DeleteAsync(id);
+                            return "success";
+                        }
+                        else
+                        {
+                            return "unknownID";
+                        }
                     default:
                         return "failure";
                 }

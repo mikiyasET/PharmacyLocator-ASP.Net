@@ -45,7 +45,7 @@ namespace PharmacyLocator.Base
             return result;
         }
 
-        public async Task UpdateAsync(long id, T entity)
+        public async Task UpdateAsync(T entity)
         {
             EntityEntry entityEntry = _context.Entry<T>(entity);
             // set the state

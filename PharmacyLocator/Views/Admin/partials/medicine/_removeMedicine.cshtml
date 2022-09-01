@@ -24,10 +24,12 @@
                 {
                     counter++;
                     var adminName = (await adminservice.GetByIdAsync(medicine.AddBy)).Name;
+                    var meddisc = medicine.Description == null ? "" : medicine.Description.Substring(0, medicine.Description.Length > 30 ? 30 : medicine.Description.Length);
+
                     <tr onclick="remove('medicine','@medicine.Id')">
                         <td>@counter</td>
                         <td>@medicine.Name</td>
-                        <td>@medicine.Description.Substring(0,medicine.Description.Length > 30 ? 30 : medicine.Description.Length)</td>
+                        <td>@meddisc</td>
                         <td>@adminName</td>
                     </tr>
                 }

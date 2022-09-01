@@ -12,6 +12,7 @@ const medicineIcon = $('#medicineLink i:last-child')
 const locationIcon = $('#locationLink i:last-child')
 const pharmacyIcon = $('#pharmacyLink i:last-child')
 const storeIcon = $('#storeLink i:last-child')
+const path = "admin/";
 
 medicineTab.hide()
 locationTab.hide()
@@ -29,8 +30,8 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
 function loadPage(location, data = '', id = '') {
-    let path = "admin/";
     let request;
     switch (location) {
         case 'dashboard':
@@ -138,8 +139,36 @@ function loadPage(location, data = '', id = '') {
     });
 }
 
+function add(to) {
+    switch (to) {
+        case 'medicine':
+            medicineBtn()
+        case 'location':
+            locationBtn()
+            break
+        default:
+            Toast.fire({
+                icon: 'error',
+                title: 'Unknown call'
+            })
+    }
+}
+function modify(to, id) {
+    switch (to) {
+        case 'medicine':
+            medicineBtn('edit', id)
+            break
+        case 'location':
+            locationBtn('edit', id)
+            break
+        default:
+            Toast.fire({
+                icon: 'error',
+                title: 'Unknown call'
+            })
+    }
+}
 function remove(to, id) {
-    let path = "admin/";
     showLoading()
     let name = ''
     let tab = ''
@@ -226,7 +255,150 @@ function remove(to, id) {
     })
 }
 
-
+function medicineBtn(data = 'add', id = null) {
+    var formData = new FormData();
+    formData.append('Id', id)
+    formData.append('Name', $("input[name='name']").val())
+    formData.append('Description', $("textarea[name='description']").val())
+    formData.append('Image', $("input[name='image']")[0].files[0])
+    formData.append('submit', data === 'add' ? 'addMedicine' : 'editMedicine')
+    $.ajax({
+        url: "admin/ModMedicine",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function () {
+            showLoading()
+            $('button[type="submit"]').prop('disabled', true);
+        },
+        success: function (data) {
+            hideLoading()
+            $('button[type="submit"]').prop('disabled', false);
+            console.log(data)
+            switch (data) {
+                case 'success':
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Medicine added successfully'
+                    })
+                    loadPage('medicine', 'add')
+                    break;
+                case 'editsuccess':
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Medicine modified successfully'
+                    })
+                    loadPage('medicine', 'edit')
+                    break;
+                case 'nameExist':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Name already exists'
+                    })
+                    break;
+                case 'imageError':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please select an image.'
+                    })
+                    break;
+                case 'NameEmpty':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please enter Medicine Name it\'s required.'
+                    })
+                    break;
+                case 'unknownTask':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please refresh the tab and try again.'
+                    })
+                    break;
+                default:
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Unexpexted Error'
+                    })
+            }
+        },
+        error: function (e) {
+            hideLoading()
+            Toast.fire({
+                icon: 'error',
+                title: 'Internal Error'
+            })
+            $('button[type="submit"]').prop('disabled', false);
+        }
+    });
+}
+function locationBtn(data = 'add', id = null) {
+    showLoading()
+    let name = $("input[name='name']").val();
+    let request = $.ajax({
+        url: path + "ModLocation",
+        type: "POST",
+        data: {
+            id: id,
+            name: name,
+            submit: data === 'add' ? 'addLocation' : 'editLocation'
+        },
+        dataType: "text"
+    });
+    if (name != '') {
+        request.done(function (output) {
+            console.log(output);
+            switch (output) {
+                case 'locationSuccess':
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Location added successfully'
+                    })
+                    loadPage('location', 'add')
+                    break;
+                case 'locationNameExist':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Name already exists'
+                    })
+                    break;
+                case 'editLocationSuccess':
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Location modified successfully'
+                    })
+                    loadPage('location', 'edit')
+                    break;
+                case 'editLocationUnknownID':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Id unknown, Please refresh the page'
+                    })
+                    break;
+                default:
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Internal Error'
+                    })
+            }
+            hideLoading()
+        });
+        request.fail(function (jqXHR, textStatus) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Connection Error'
+            })
+            hideLoading()
+        });
+    } else {
+        Toast.fire({
+            icon: 'error',
+            title: 'Empty field'
+        })
+        hideLoading()
+    }
+}
 
 function showLoading() {
     $('#mainpage').addClass('loading')
@@ -234,6 +406,7 @@ function showLoading() {
 function hideLoading() {
     $('#mainpage').removeClass('loading')
 }
+
 
 function collapseAll($except = null) {
     switch ($except) {

@@ -1,9 +1,11 @@
-﻿using PharmacyLocator.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using PharmacyLocator.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PharmacyLocator.Models
 {
+    [Index(nameof(Medicine.Name), IsUnique = true)]
     public class Medicine : IEntityBase
     {
         [Key]

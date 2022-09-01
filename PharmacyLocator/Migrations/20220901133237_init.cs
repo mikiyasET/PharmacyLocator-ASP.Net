@@ -15,9 +15,8 @@ namespace PharmacyLocator.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Priority = table.Column<int>(type: "int", nullable: false)
+                    Username = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +29,7 @@ namespace PharmacyLocator.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,6 +85,7 @@ namespace PharmacyLocator.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lng = table.Column<int>(type: "int", nullable: true),
                     Lat = table.Column<int>(type: "int", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: true),
                     LocationId = table.Column<long>(type: "bigint", nullable: false),
                     AddBy = table.Column<long>(type: "bigint", nullable: true)
@@ -163,9 +163,27 @@ namespace PharmacyLocator.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_admins_Username",
+                table: "admins",
+                column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_locations_Name",
+                table: "locations",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_medicines_AddBy",
                 table: "medicines",
                 column: "AddBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_medicines_Name",
+                table: "medicines",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_pharmacies_AddBy",
@@ -176,6 +194,12 @@ namespace PharmacyLocator.Migrations
                 name: "IX_pharmacies_LocationId",
                 table: "pharmacies",
                 column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_pharmacies_Username",
+                table: "pharmacies",
+                column: "Username",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_records_MedicineId",
@@ -196,6 +220,12 @@ namespace PharmacyLocator.Migrations
                 name: "IX_stores_PharmacyId",
                 table: "stores",
                 column: "PharmacyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_Username",
+                table: "users",
+                column: "Username",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

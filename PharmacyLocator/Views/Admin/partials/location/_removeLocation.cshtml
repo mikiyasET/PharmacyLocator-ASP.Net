@@ -1,0 +1,29 @@
+﻿@model IEnumerable<PharmacyLocator.Models.Location>
+@{
+    Layout = "";
+}
+<div id="main-content">
+    <div class="mt-5">
+        <table id="pharmacyTable" class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int counter = 0;
+                }
+                @foreach (var location in Model)
+                {
+                    counter++;
+                    <tr onclick="remove('location','@location.Id')">
+                        <td>@counter</td>
+                        <td>@location.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -12,7 +12,7 @@ using PharmacyLocator.Models;
 namespace PharmacyLocator.Migrations
 {
     [DbContext(typeof(PharmaDbContext))]
-    [Migration("20220827131212_init")]
+    [Migration("20220901133237_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,15 +40,15 @@ namespace PharmacyLocator.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("admins");
                 });
@@ -63,9 +63,12 @@ namespace PharmacyLocator.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("locations");
                 });
@@ -96,6 +99,9 @@ namespace PharmacyLocator.Migrations
 
                     b.HasIndex("AddBy");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("medicines");
                 });
 
@@ -109,6 +115,9 @@ namespace PharmacyLocator.Migrations
 
                     b.Property<long?>("AddBy")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Lat")
                         .HasColumnType("int");
@@ -142,6 +151,9 @@ namespace PharmacyLocator.Migrations
                     b.HasIndex("AddBy");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("pharmacies");
                 });
@@ -232,6 +244,9 @@ namespace PharmacyLocator.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("users");
                 });
