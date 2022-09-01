@@ -90,9 +90,9 @@ function loadPage(location, data = '', id = '') {
                 }
             });
             break;
-        case 'leaderboard':
+        case 'leadBoard':
             request = $.ajax({
-                url: path + "leaderboard",
+                url: path + "leadBoard",
                 type: "GET",
                 dataType: "html",
                 data: {

@@ -21,8 +21,9 @@ namespace PharmacyLocator.Controllers
         private readonly ILocationService _locservice;
         private readonly IPharmacyService _pharmaservice;
         private readonly IUserService _userservice;
+        private readonly IRecordService _recordservice;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce,IWebHostEnvironment webHostEnvironment)
+        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce,IWebHostEnvironment webHostEnvironment, IRecordService recordService)
         {
             _service = service;
             _medservice = medsevice;
@@ -30,6 +31,7 @@ namespace PharmacyLocator.Controllers
             _pharmaservice = pharmaService;
             _userservice = userserivce;
             _webHostEnvironment = webHostEnvironment;
+            _recordservice = recordService;
         }
         
         public async Task<IActionResult> Index()
@@ -124,6 +126,12 @@ namespace PharmacyLocator.Controllers
                 var pharmaData = await _pharmaservice.GetAllAsync();
                 return View(pharmaData);
             }
+        }
+
+        public async Task<IActionResult> LeadBoard() { 
+            _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
+            IEnumerable<Record> record = await _recordservice.GetAllAsync();
+            return View(record);
         }
 
         [HttpPost]
