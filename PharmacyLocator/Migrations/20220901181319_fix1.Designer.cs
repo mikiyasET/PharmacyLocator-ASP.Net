@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PharmacyLocator.Models;
 
@@ -11,9 +12,10 @@ using PharmacyLocator.Models;
 namespace PharmacyLocator.Migrations
 {
     [DbContext(typeof(PharmaDbContext))]
-    partial class PharmaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220901181319_fix1")]
+    partial class fix1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,9 +115,6 @@ namespace PharmacyLocator.Migrations
 
                     b.Property<long?>("AddBy")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()

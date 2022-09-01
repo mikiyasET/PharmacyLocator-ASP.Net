@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PharmacyLocator.Models
 {
-    [Index(nameof(Pharmacy.Username), IsUnique = true)]
+    [Index(nameof(Pharmacy.Email), IsUnique = true)]
     public class Pharmacy : IEntityBase
     {
         [Key]
@@ -17,10 +17,9 @@ namespace PharmacyLocator.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        [Display(Name = "Username")]
-        [StringLength(20, ErrorMessage = "Username charcters length must be with in 4 - 20 letters.", MinimumLength = 4)]
-        [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; }
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; set; }
 
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
@@ -28,9 +27,9 @@ namespace PharmacyLocator.Models
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
-        public int? Lng { get; set; }
-        public int? Lat { get; set; }
+        public string? MapLink { get; set; }
         public string? Image { get; set; }
+        public string? Description { get; set; }
 
         [StringLength(13,MinimumLength = 10)]
         [Display(Name = "Phone")]

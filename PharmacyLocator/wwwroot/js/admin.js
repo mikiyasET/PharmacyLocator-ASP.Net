@@ -143,8 +143,12 @@ function add(to) {
     switch (to) {
         case 'medicine':
             medicineBtn()
+            break
         case 'location':
             locationBtn()
+            break
+        case 'pharmacy':
+            pharmacyBtn()
             break
         default:
             Toast.fire({
@@ -160,6 +164,9 @@ function modify(to, id) {
             break
         case 'location':
             locationBtn('edit', id)
+            break
+        case 'pharmacy':
+            pharmacyBtn('edit', id)
             break
         default:
             Toast.fire({
@@ -254,26 +261,24 @@ function remove(to, id) {
         }
     })
 }
-
 function medicineBtn(data = 'add', id = null) {
+    var name = $("input[name='name']").val();
     var formData = new FormData();
     formData.append('Id', id)
     formData.append('Name', $("input[name='name']").val())
     formData.append('Description', $("textarea[name='description']").val())
     formData.append('Image', $("input[name='image']")[0].files[0])
     formData.append('submit', data === 'add' ? 'addMedicine' : 'editMedicine')
-    $.ajax({
-        url: "admin/ModMedicine",
+    let request = $.ajax({
+        url: path + "ModMedicine",
         type: "POST",
         data: formData,
-        contentType: false,
         cache: false,
         processData: false,
-        beforeSend: function () {
-            showLoading()
-            $('button[type="submit"]').prop('disabled', true);
-        },
-        success: function (data) {
+        contentType: false,
+    })
+    if (name != '') {
+        request.done(function (data) {
             hideLoading()
             $('button[type="submit"]').prop('disabled', false);
             console.log(data)
@@ -319,19 +324,24 @@ function medicineBtn(data = 'add', id = null) {
                 default:
                     Toast.fire({
                         icon: 'error',
-                        title: 'Unexpexted Error'
+                        title: 'Unexpected Error'
                     })
             }
-        },
-        error: function (e) {
-            hideLoading()
+        });
+        request.fail(function (jqXHR, textStatus) {
             Toast.fire({
                 icon: 'error',
-                title: 'Internal Error'
+                title: 'Connection Error'
             })
-            $('button[type="submit"]').prop('disabled', false);
-        }
-    });
+            hideLoading()
+        });
+    } else {
+        Toast.fire({
+            icon: 'error',
+            title: 'Empty field'
+        })
+        hideLoading()
+    }
 }
 function locationBtn(data = 'add', id = null) {
     showLoading()
@@ -399,7 +409,123 @@ function locationBtn(data = 'add', id = null) {
         hideLoading()
     }
 }
-
+function pharmacyBtn(data = 'add', id = null) {
+    showLoading()
+    let name = $("input[name='name']").val() ?? '';
+    let mapLink = $("input[name='mapLink']").val() ?? '';
+    let location = $("select[name='location']").val() ?? '';
+    let email = $("input[name='email']").val() ?? '';
+    let password = $("input[name='password']").val() ?? '';
+    let cpassword = $("input[name='cpassword']").val() ?? '';
+    let description = $("textarea[name='description']").val() ?? '';
+    var formData = new FormData();
+    formData.append('Id', id)
+    formData.append('Name', name)
+    formData.append('MapLink', mapLink)
+    formData.append('LocationId', parseFloat(location))
+    formData.append('Email', email)
+    formData.append('Password', password)
+    formData.append('Description', description)
+    formData.append('Image', $("input[name='image']")[0].files[0])
+    formData.append('submit', data === 'add' ? 'addPharmacy' : 'editPharmacy')
+    if (validateEmail(email)) {
+        if (validURL(mapLink)) {
+            if ((password == cpassword) || data == 'edit') {
+                if (name != '' && mapLink != '' && location != '' && email != '' && ((password != '' && cpassword != '') || data == 'edit')) {
+                    let request = $.ajax({
+                        url: path + "ModPharmacy",
+                        type: "POST",
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                    });
+                    request.done(function (output) {
+                        console.log(output);
+                        switch (output) {
+                            case 'success':
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Pharmacy added successfully'
+                                })
+                                loadPage('pharmacy', 'add')
+                                break;
+                            case 'nameExist':
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Name already exists'
+                                })
+                                break;
+                            case 'passwordLength':
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Password length must be 8 or greater in length'
+                                })
+                                break;
+                            case 'emailError':
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Invalid email address'
+                                })
+                                break;
+                            case 'editsuccess':
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Pharmacy modified successfully'
+                                })
+                                loadPage('pharmacy', 'edit')
+                                break;
+                            case 'unknownID':
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Id unknown, Please refresh the page'
+                                })
+                                break;
+                            default:
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Internal Error'
+                                })
+                        }
+                        hideLoading()
+                    });
+                    request.fail(function (jqXHR, textStatus) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Connection Error'
+                        })
+                        hideLoading()
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Empty field'
+                    })
+                    hideLoading()
+                }
+            }
+            else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Password doesn\'t match'
+                })
+                hideLoading()
+            }
+        } else {
+            Toast.fire({
+                icon: 'error',
+                title: 'Map Link not valid'
+            })
+            hideLoading()
+        }
+    } else {
+        Toast.fire({
+            icon: 'error',
+            title: 'Email not valid'
+        })
+        hideLoading()
+    }
+}
 function showLoading() {
     $('#mainpage').addClass('loading')
 }
@@ -524,3 +650,20 @@ $('.main').on('click', function (e) {
         }, 'fast', "swing", () => { });
     }
 })
+
+const validURL = (str) => {
+    var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+    return !!pattern.test(str);
+}
+const validateEmail = (email) => {
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};

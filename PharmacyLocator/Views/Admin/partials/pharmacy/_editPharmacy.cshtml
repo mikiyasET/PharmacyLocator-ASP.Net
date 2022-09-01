@@ -1,0 +1,107 @@
+﻿@using PharmacyLocator.Models.Services
+@inject ILocationService _locservice
+@inject IPharmacyService _pharmaservice
+@model IEnumerable<PharmacyLocator.Models.Pharmacy>
+
+
+@{
+    Pharmacy pharma = await _pharmaservice.GetByIdAsync(ViewBag.id);
+    var name = "";
+    string mapLink = "";
+    string desc = "";
+    long locationid = 0;
+    string email = "";
+    string img = "picture.png";
+    string status = "";
+    if (pharma != null)
+    {
+        name = pharma.Name;
+        mapLink = pharma.MapLink;
+        img = pharma.Image;
+        desc = pharma.Description;
+        locationid = pharma.LocationId ?? 0;
+        email = pharma.Email;
+    }
+    else
+    {
+        status = "disabled";
+    }
+}
+<p id="main-title">Modify Pharmacy</p>
+    <input type="hidden" name="submit" value="editPharmacy">
+    <input type="hidden" name="id" value="<?php echo $id; ?>">
+    <div id="main-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="LocationInput" class="form-label">Pharmacy Name</label>
+                    <input type="text" name="name" class="form-control" id="LocationInput" tabindex="1" placeholder="Name" value="@name" @status>
+                </div>
+                <div class="mb-3">
+                    <label for="MapInput" class="form-label">Map Link</label>
+                    <input type="url" name="mapLink" class="form-control" id="MapInput" tabindex="2" placeholder="Google Map Link" value="@mapLink" @status>
+                </div>
+                <div class="mb-3">
+                    <label for="decInput" class="form-label">Pharmacy Description</label>
+                    <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="About the pharmacy and address ..." @status >@desc</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="LocationSelectInput" class="form-label">Location</label>
+                    <select class="form-select" name="location" id="LocationSelectInput" tabindex="4" @status>
+                            <option selected disabled>Choose ...</option>
+                           <option selected disabled>Choose ...</option>
+                        @{
+                            IEnumerable<Location> locations = await _locservice.GetAllAsync();
+                        }
+                        @foreach (var location in locations)
+                        {
+                            bool stat = (location.Id == locationid) ? true : false;
+                            <option value='@location.Id' selected="@stat">@location.Name</option>
+                        }
+                        </select>
+                </div>
+                <div class="mb-3">
+                    <label for="EmailInput" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" id="EmailInput" tabindex="5" placeholder="Email" value="@email" @status>
+                </div>
+                <div class="mb-3">
+                    <img src="~/images/pharmacies/@img" alt="" style="width: auto;height: 15.5rem;">
+                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="6">
+                </div>
+            </div>
+        </div>
+        <div class="d-grid gap-2">
+            <button class="btn ca-btn mt-3" type="button" onclick="modify('pharmacy','@ViewBag.id')" @status>Edit</button>
+        </div>
+        <div class="mt-5">
+            <table id="pharmacyTable" class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int counter = 0;
+                    }
+                    @foreach (var pharmacy in Model)
+                    {
+                        Location location = await _locservice.GetByIdAsync(Int64.Parse(pharmacy.LocationId.ToString()));
+                        counter++;
+                        <tr onclick="loadPage('pharmacy','edit','@pharmacy.Id')">
+                            <th scope="row">@counter</th>
+                            <td>@pharmacy.Name</td>
+                            <td>@pharmacy.Email</td>
+                            <td>@location.Name</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>

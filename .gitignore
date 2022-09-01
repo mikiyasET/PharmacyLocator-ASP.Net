@@ -33,6 +33,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 PharmacyLocator/wwwroot/images/medicines/
+PharmacyLocator/wwwroot/images/pharmacies/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

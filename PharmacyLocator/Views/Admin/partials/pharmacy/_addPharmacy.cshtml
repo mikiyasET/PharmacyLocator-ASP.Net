@@ -1,0 +1,53 @@
+﻿@using PharmacyLocator.Models.Services
+@inject ILocationService _locservice
+<p id="main-title">Add Pharmacy</p>
+
+<div id="main-content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="nameInput" class="form-label">Pharmacy Name</label>
+                <input type="text" name="name" class="form-control" id="nameInput" tabindex="1" placeholder="Name">
+            </div>
+            <div class="mb-3">
+                <label for="MapInput" class="form-label">Map Link</label>
+                <input type="url" name="mapLink" class="form-control" id="MapInput" tabindex="2" placeholder="Google Map Link">
+            </div>
+            <div class="mb-3">
+                <label for="LocationSelectInput" class="form-label">Location</label>
+                <select class="form-select" name="location" id="LocationSelectInput" tabindex="3">
+                    <option selected disabled>Choose ...</option>
+                    @{IEnumerable<Location> locations = await _locservice.GetAllAsync();}
+                    @foreach (var location in locations){
+                        <option value='@location.Id'>@location.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="decInput" class="form-label">Pharmacy Description</label>
+                <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="4" placeholder="About the pharmacy and address ..."></textarea>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="EmailInput" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="EmailInput" tabindex="5" placeholder="Email">
+            </div>
+            <div class="mb-3">
+                <label for="passInput" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="passInput" tabindex="6" placeholder="Password">
+            </div>
+            <div class="mb-3">
+                <label for="cpassInput" class="form-label">Confirm Password</label>
+                <input type="password" name="cpassword" class="form-control" id="cpassInput" tabindex="7" placeholder="Re-Type Password">
+            </div>
+            <div class="mb-3">
+                <label for="imgInput" class="form-label">Pharmacy Image</label>
+                <input type="file" name="image" class="form-control" id="imgInput" tabindex="8">
+            </div>
+        </div>
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn ca-btn mt-3" onclick="add('pharmacy')">Add</button>
+    </div>
+</div>

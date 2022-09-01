@@ -1,0 +1,27 @@
+﻿@using PharmacyLocator.Models.Services
+@{
+    Layout = "";
+}
+
+@if (ViewBag.data == "add")
+{
+    <partial name="partials/pharmacy/_addPharmacy" />
+}
+else if (ViewBag.data == "edit")
+{
+    <partial name="partials/pharmacy/_editPharmacy" />
+}
+else if (ViewBag.data == "remove")
+{
+    <partial name="partials/pharmacy/_removePharmacy" />
+}
+else
+{
+    <partial name="partials/pharmacy/_viewPharmacy" />
+}
+
+<script>
+    $(document).ready(function () {
+        $('#pharmacyTable').DataTable();
+    });
+</script>
