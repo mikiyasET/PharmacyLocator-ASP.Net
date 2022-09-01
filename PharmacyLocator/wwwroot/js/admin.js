@@ -103,7 +103,7 @@ function loadPage(location, data = '', id = '') {
             break;
         case 'password':
             request = $.ajax({
-                url: path + "password",
+                url: path + "ChangePassword",
                 type: "GET",
                 dataType: "html",
             });
@@ -149,6 +149,9 @@ function add(to) {
             break
         case 'pharmacy':
             pharmacyBtn()
+            break
+        case 'password':
+            passwordBtn()
             break
         default:
             Toast.fire({
@@ -526,6 +529,77 @@ function pharmacyBtn(data = 'add', id = null) {
         hideLoading()
     }
 }
+function passwordBtn(to = 'admin') {
+    let oldPass = $("input[name='current']").val();
+    let newPass = $("input[name='new']").val();
+    let rePass = $("input[name='confirm']").val();
+    if (rePass != '' && newPass != '' && oldPass != '') {
+        if (newPass == rePass) {
+            showLoading()
+            let request = $.ajax({
+                url: path + "ChangePassword",
+                type: "POST",
+                data: {
+                    oldPass: oldPass,
+                    newPass: newPass,
+                    submit: to == 'admin' ? 'changePassword' : 'changePasswordP'
+                },
+                dataType: "text"
+            });
+            request.done(function (output) {
+                console.log(output);
+                switch (output) {
+                    case 'success':
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Password changed successfully'
+                        })
+                        loadPage('password')
+                        break;
+                    case 'error':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Error in changing your password, try again later'
+                        })
+                        break;
+                    case 'currentError':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Your current password is not correct'
+                        })
+                        break;
+                    case 'passwordInvalid':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Password length must be should be 8 or more characters'
+                        })
+                        break;
+
+                }
+                hideLoading()
+            });
+            request.fail(function (jqXHR, textStatus) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Request failed: ' + textStatus
+                })
+                hideLoading()
+            });
+        } else {
+            Toast.fire({
+                icon: 'error',
+                title: 'Password doesn\'t match'
+            })
+        }
+    }
+    else {
+        Toast.fire({
+            icon: 'error',
+            title: 'There is an empty field'
+        })
+    }
+}
+
 function showLoading() {
     $('#mainpage').addClass('loading')
 }

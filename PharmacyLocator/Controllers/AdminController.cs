@@ -129,11 +129,59 @@ namespace PharmacyLocator.Controllers
         }
 
         public async Task<IActionResult> LeadBoard() { 
-            _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
             IEnumerable<Record> record = await _recordservice.GetAllAsync();
             return View(record);
         }
 
+        public async Task<IActionResult> ChangePassword()
+        {
+            _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<string> ChangePassword(string oldPass, string newPass,string submit) {
+            try
+            {
+                if (submit == "changePassword")
+                {
+                    _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
+                    Admin admin = await _service.GetByIdAsync(_userId);
+                    if (admin != null)
+                    {
+                        if (admin.Password == oldPass)
+                        {
+                            if (newPass.Length >= 8)
+                            {
+                                admin.Password = newPass;
+                                await _service.UpdateAsync(admin);
+                                return "success";
+                            }
+                            else
+                            {
+                                return "passwordInvalid";
+                            }
+                        }
+                        else
+                        {
+                            return "currentError";
+                        }
+                    }
+                    else
+                    {
+                        return "error";
+                    }
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch (Exception e)
+            {
+                return "Error: " + e;
+            }
+        }
         [HttpPost]
         public async Task<string> ModMedicine(Medicine medicine, IFormFile Image, string submit)
         {
@@ -253,7 +301,6 @@ namespace PharmacyLocator.Controllers
                 return "failure";
             }
         }
-
         [HttpPost]
         public async Task<string> ModPharmacy (Pharmacy pharmacy, IFormFile Image, string submit)
         {
