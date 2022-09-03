@@ -66,11 +66,12 @@ namespace PharmacyLocator.Controllers
 
         [Route("Login")]
         [HttpPost]
-        public async Task<IActionResult> Login(string userName = "x", string password = "x", string returnUrl = "x")
+        public async Task<IActionResult> Login(string userName = "", string password = "", string returnUrl = "")
         {
             ViewData["ReturnUrl"] = returnUrl;
-            var whoisLog = string.IsNullOrEmpty(returnUrl) ? "" : returnUrl.Substring(1);
+            var whoisLog = string.IsNullOrEmpty(returnUrl) ? null : returnUrl.Substring(1);
             // Normally Identity handles sign in, but you can do it directly
+            whoisLog = string.IsNullOrEmpty(whoisLog) ? "admin" : whoisLog;
             if (await ValidateLogin(userName, password, whoisLog))
             {
                 var claims = new List<Claim>
