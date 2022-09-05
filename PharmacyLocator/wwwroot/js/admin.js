@@ -93,7 +93,7 @@ function loadPage(location, data = '', id = '') {
             break;
         case 'store':
             request = $.ajax({
-                url: path + "store",
+                url: pharma_path + "store",
                 type: "GET",
                 dataType: "html",
                 data: {

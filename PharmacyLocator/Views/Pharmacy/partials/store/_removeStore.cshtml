@@ -1,0 +1,26 @@
+﻿@using PharmacyLocator.Models.Services
+@model IEnumerable<Store>
+@inject IMedicineService medicineservice;
+<div class="mt-5">
+    <table id="pharmacyTable" class="table table-borderless table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Medicine Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+            }
+            @foreach (var item in Model)
+            {
+                i++;
+                string medicineName = (await medicineservice.GetByIdAsync(Int64.Parse(item.MedicineId.ToString()))).Name;
+                <tr>@i</tr>
+                <tr>@medicineName</tr>
+            }
+
+        </tbody>
+    </table>
+</div>

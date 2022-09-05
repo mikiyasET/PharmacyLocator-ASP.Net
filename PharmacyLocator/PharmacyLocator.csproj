@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Pharmacy\partials\" />
     <Folder Include="wwwroot\images\pharmacies\" />
   </ItemGroup>
 
