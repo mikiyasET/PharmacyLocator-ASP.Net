@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using PharmacyLocator.Base;
 
 namespace PharmacyLocator.Models.Services
@@ -12,9 +13,11 @@ namespace PharmacyLocator.Models.Services
         }
         public async Task<IEnumerable<Medicine>> GetMedNotInStore(long pharmacyId)
         {
-            IEnumerable<Medicine> medicine = from med in _context.medicines
-                                        join store in _context.stores on med.Id equals store.MedicineId where pharmacyId == store.PharmacyId select med;
-            return medicine;
+            var quary = from med in _context.medicines
+                                             where (from store in _context.stores where (med.Id == store.MedicineId) && (store.PharmacyId == pharmacyId) select store.MedicineId).FirstOrDefault() != med.Id
+                                             select med;
+            IEnumerable<Medicine> medicines = await quary.ToListAsync().ConfigureAwait(false);
+            return medicines;
         }
     }
 }

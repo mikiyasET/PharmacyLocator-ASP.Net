@@ -183,6 +183,9 @@ function add(to) {
         case 'password':
             passwordBtn()
             break
+        case 'pharma_password':
+            passwordBtn('pharmacy')
+            break;
         default:
             Toast.fire({
                 icon: 'error',
@@ -294,6 +297,66 @@ function remove(to, id) {
         }
     })
 }
+function removeStore(id) {
+    showLoading()
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You're about to delete this Store!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let request = $.ajax({
+                url: pharma_path + "RemoveStore",
+                type: "DELETE",
+                data: {
+                    id: id
+                },
+                dataType: "text"
+            });
+            request.done(function (output) {
+                console.log(output);
+                switch (output) {
+                    case 'success':
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Store deleted successfully'
+                        })
+                        loadPage('store', 'remove')
+                        break;
+                    case 'failure':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'store not deleted, try again later!'
+                        })
+                        break;
+                    case 'unknownID':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'something went wrong, refresh the page!'
+                        })
+                        break;
+                }
+                hideLoading()
+            });
+            request.fail(function (jqXHR, textStatus) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Request failed: ' + textStatus
+                })
+                hideLoading()
+            });
+        }
+        else {
+            hideLoading()
+        }
+    })
+}
+
 function medicineBtn(data = 'add', id = null) {
     var name = $("input[name='name']").val();
     var formData = new FormData();
@@ -560,6 +623,8 @@ function pharmacyBtn(data = 'add', id = null) {
     }
 }
 function passwordBtn(to = 'admin') {
+    let mypath = to == 'admin' ? path : pharma_path;
+    let load = to == 'admin' ? 'password' : 'password_pharma';
     let oldPass = $("input[name='current']").val();
     let newPass = $("input[name='new']").val();
     let rePass = $("input[name='confirm']").val();
@@ -567,12 +632,11 @@ function passwordBtn(to = 'admin') {
         if (newPass == rePass) {
             showLoading()
             let request = $.ajax({
-                url: path + "ChangePassword",
+                url: mypath + "ChangePassword",
                 type: "POST",
                 data: {
                     oldPass: oldPass,
-                    newPass: newPass,
-                    submit: to == 'admin' ? 'changePassword' : 'changePasswordP'
+                    newPass: newPass
                 },
                 dataType: "text"
             });
@@ -584,7 +648,7 @@ function passwordBtn(to = 'admin') {
                             icon: 'success',
                             title: 'Password changed successfully'
                         })
-                        loadPage('password')
+                        loadPage(load)
                         break;
                     case 'error':
                         Toast.fire({
@@ -629,7 +693,64 @@ function passwordBtn(to = 'admin') {
         })
     }
 }
-
+function addStore(id) {
+    showLoading()
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You're add this medicine to your store!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Add it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let request = $.ajax({
+                url: pharma_path + "AddStore",
+                type: "POST",
+                data: {
+                    id: id
+                },
+                dataType: "text"
+            });
+            request.done(function (output) {
+                console.log(output);
+                switch (output) {
+                    case 'success':
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Added successfully'
+                        })
+                        loadPage('store', 'add')
+                        break;
+                    case 'failure':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Not added, try again later!'
+                        })
+                        break;
+                    case 'medExist':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Medicine already in store!'
+                        })
+                        break;
+                }
+                hideLoading()
+            });
+            request.fail(function (jqXHR, textStatus) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Request failed: ' + textStatus
+                })
+                hideLoading()
+            });
+        }
+        else {
+            hideLoading()
+        }
+    })
+}
 function showLoading() {
     $('#mainpage').addClass('loading')
 }

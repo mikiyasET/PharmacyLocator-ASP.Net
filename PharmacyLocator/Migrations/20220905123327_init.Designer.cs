@@ -12,7 +12,7 @@ using PharmacyLocator.Models;
 namespace PharmacyLocator.Migrations
 {
     [DbContext(typeof(PharmaDbContext))]
-    [Migration("20220901133237_init")]
+    [Migration("20220905123327_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,18 +116,22 @@ namespace PharmacyLocator.Migrations
                     b.Property<long?>("AddBy")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Lat")
-                        .HasColumnType("int");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("Lng")
-                        .HasColumnType("int");
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("LocationId")
                         .IsRequired()
                         .HasColumnType("bigint");
+
+                    b.Property<string>("MapLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -141,19 +145,14 @@ namespace PharmacyLocator.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddBy");
 
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("Username")
+                    b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("pharmacies");
                 });
@@ -169,10 +168,12 @@ namespace PharmacyLocator.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<long>("MedicineId")
+                    b.Property<long?>("MedicineId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -192,12 +193,6 @@ namespace PharmacyLocator.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<int>("AddedAt")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<long?>("MedicineId")
                         .IsRequired()
                         .HasColumnType("bigint");
@@ -205,9 +200,6 @@ namespace PharmacyLocator.Migrations
                     b.Property<long?>("PharmacyId")
                         .IsRequired()
                         .HasColumnType("bigint");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

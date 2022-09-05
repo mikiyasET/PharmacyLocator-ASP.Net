@@ -81,11 +81,11 @@ namespace PharmacyLocator.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Lng = table.Column<int>(type: "int", nullable: true),
-                    Lat = table.Column<int>(type: "int", nullable: true),
+                    MapLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: true),
                     LocationId = table.Column<long>(type: "bigint", nullable: false),
                     AddBy = table.Column<long>(type: "bigint", nullable: true)
@@ -140,10 +140,7 @@ namespace PharmacyLocator.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MedicineId = table.Column<long>(type: "bigint", nullable: false),
-                    PharmacyId = table.Column<long>(type: "bigint", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    AddedAt = table.Column<int>(type: "int", nullable: false)
+                    PharmacyId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,15 +188,15 @@ namespace PharmacyLocator.Migrations
                 column: "AddBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_pharmacies_Email",
+                table: "pharmacies",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_pharmacies_LocationId",
                 table: "pharmacies",
                 column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_pharmacies_Username",
-                table: "pharmacies",
-                column: "Username",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_records_MedicineId",

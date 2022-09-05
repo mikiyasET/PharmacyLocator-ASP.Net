@@ -13,12 +13,12 @@ namespace PharmacyLocator.Models
         
         [ForeignKey("Medicine")]
         [Required]
-        public long MedicineId { get; set; }
+        public long? MedicineId { get; set; }
         public virtual Medicine Medicine { get; set; }
 
         [ForeignKey("User")]
         [Required]
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public virtual User User { get; set; }
 
         [DefaultValue(1)]

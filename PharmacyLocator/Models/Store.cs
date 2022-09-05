@@ -17,9 +17,5 @@ namespace PharmacyLocator.Models
         [ForeignKey("Pharmacy")]
         public long? PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
-
-        public double Price { get; set; }
-        public int Amount { get; set; }
-        public int AddedAt { get; set; }
     }
 }

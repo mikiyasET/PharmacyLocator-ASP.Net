@@ -166,10 +166,12 @@ namespace PharmacyLocator.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<long>("MedicineId")
+                    b.Property<long?>("MedicineId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -189,12 +191,6 @@ namespace PharmacyLocator.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<int>("AddedAt")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<long?>("MedicineId")
                         .IsRequired()
                         .HasColumnType("bigint");
@@ -202,9 +198,6 @@ namespace PharmacyLocator.Migrations
                     b.Property<long?>("PharmacyId")
                         .IsRequired()
                         .HasColumnType("bigint");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

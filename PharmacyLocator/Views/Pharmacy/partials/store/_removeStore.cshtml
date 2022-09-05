@@ -17,8 +17,10 @@
             {
                 i++;
                 string medicineName = (await medicineservice.GetByIdAsync(Int64.Parse(item.MedicineId.ToString()))).Name;
-                <tr>@i</tr>
-                <tr>@medicineName</tr>
+                <tr onclick="removeStore('@item.Id')">
+                <td>@i</td>
+                <td>@medicineName</td>
+             </tr>
             }
 
         </tbody>

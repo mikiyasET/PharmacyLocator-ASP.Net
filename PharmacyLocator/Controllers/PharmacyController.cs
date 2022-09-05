@@ -66,6 +66,47 @@ namespace PharmacyLocator.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<string> AddStore(long id) {
+           try
+            {
+                _pharmaId = await _pharmaservice.getIdFromEmail(User.Claims.ToList()[0].Value);
+                List<Store> checkStore = (await _storeService.GetAllAsync()).Where((store) => store.MedicineId == id && store.PharmacyId == _pharmaId).ToList();
+                if (checkStore.Count == 0)
+                {
+                    Store store = new Store();
+                    store.PharmacyId = _pharmaId;
+                    store.MedicineId = id;
+                    await _storeService.AddAsync(store);
+                    return "success";
+                }else
+                {
+                    return "medExist";
+                }
+            }catch (Exception e)
+            {
+                return "failure: " + e;
+            }
+        }
+        [HttpDelete]
+        public async Task<string> RemoveStore(long id)
+        {
+            try
+            {
+                if ((await _storeService.GetByIdAsync(id)) != null)
+                {
+                    await _storeService.DeleteAsync(id);
+                    return "success";
+                }
+                else
+                {
+                    return "unknownId";
+                }
+            }catch (Exception e )
+            {
+                return "failure: " + e;
+            }
+        }
         public async Task<IActionResult> LeadBoard()
         {
             IEnumerable<Record> record = await _recordservice.GetAllAsync();
@@ -79,12 +120,10 @@ namespace PharmacyLocator.Controllers
         }
 
         [HttpPost]
-        public async Task<string> ChangePassword(string oldPass, string newPass, string submit)
+        public async Task<string> ChangePassword(string oldPass, string newPass)
         {
             try
             {
-                if (submit == "changePassword")
-                {
                     _pharmaId = await _pharmaservice.getIdFromEmail(User.Claims.ToList()[0].Value);
                     Pharmacy pharma = await _pharmaservice.GetByIdAsync(_pharmaId);
                     if (pharma != null)
@@ -111,15 +150,10 @@ namespace PharmacyLocator.Controllers
                     {
                         return "error";
                     }
-                }
-                else
-                {
-                    return "error";
-                }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return "Error: " + e;
+                return "error";
             }
         }
         

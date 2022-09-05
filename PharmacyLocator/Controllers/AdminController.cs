@@ -140,46 +140,40 @@ namespace PharmacyLocator.Controllers
         }
 
         [HttpPost]
-        public async Task<string> ChangePassword(string oldPass, string newPass,string submit) {
+        public async Task<string> ChangePassword(string oldPass, string newPass) {
             try
             {
-                if (submit == "changePassword")
+                _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
+                Admin admin = await _service.GetByIdAsync(_userId);
+                if (admin != null)
                 {
-                    _userId = await _service.getIdFromUsername(User.Claims.ToList()[0].Value);
-                    Admin admin = await _service.GetByIdAsync(_userId);
-                    if (admin != null)
+                    if (admin.Password == oldPass)
                     {
-                        if (admin.Password == oldPass)
+                        if (newPass.Length >= 8)
                         {
-                            if (newPass.Length >= 8)
-                            {
-                                admin.Password = newPass;
-                                await _service.UpdateAsync(admin);
-                                return "success";
-                            }
-                            else
-                            {
-                                return "passwordInvalid";
-                            }
+                            admin.Password = newPass;
+                            await _service.UpdateAsync(admin);
+                            return "success";
                         }
                         else
                         {
-                            return "currentError";
+                            return "passwordInvalid";
                         }
                     }
                     else
                     {
-                        return "error";
+                        return "currentError";
                     }
                 }
                 else
                 {
                     return "error";
                 }
+               
             }
             catch (Exception e)
             {
-                return "Error: " + e;
+                return "error";
             }
         }
         [HttpPost]
@@ -296,7 +290,7 @@ namespace PharmacyLocator.Controllers
                         return "failure";
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return "failure";
             }
