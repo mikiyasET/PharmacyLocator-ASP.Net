@@ -4,5 +4,7 @@ namespace PharmacyLocator.Models.Services
 {
     public interface IUserService : IEntityBaseRepository<User>
     {
+        public Task<bool> Login(string username, string password);
+        public Task<long> getIdFromUsername(string username);
     }
 }

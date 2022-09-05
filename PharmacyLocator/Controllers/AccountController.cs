@@ -46,21 +46,34 @@ namespace PharmacyLocator.Controllers
         {
             if (who == "admin")
             {
-                if (await _adminservice.Login(userName, password)) {
+                if (await _adminservice.Login(userName, password))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }   
+            }
+            else if (who == "pharmacy")
+            {
+                if (await _pharmaservice.Login(userName, password))
+                {
                     return true;
                 }else
                 {
                     return false;
                 }
             }
-            else if (who == "pharmacy")
-            {
-
-                return true;
-            }
             else
             {
-                return false;
+                if (await _userservice.Login(userName,password))
+                {
+                    return true;
+                }else
+                {
+                    return false;
+                }
             }
         }
 
@@ -71,7 +84,7 @@ namespace PharmacyLocator.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             var whoisLog = string.IsNullOrEmpty(returnUrl) ? null : returnUrl.Substring(1);
             // Normally Identity handles sign in, but you can do it directly
-            whoisLog = string.IsNullOrEmpty(whoisLog) ? "admin" : whoisLog;
+            whoisLog = string.IsNullOrEmpty(whoisLog) ? "user" : whoisLog;
             if (await ValidateLogin(userName, password, whoisLog))
             {
                 var claims = new List<Claim>
@@ -88,14 +101,13 @@ namespace PharmacyLocator.Controllers
                 }
                 else
                 {
-                    return Redirect("/");
+                    return Redirect("/user");
                 }
             }else
             {
                 ViewBag.errorMessage = "Invalid username or password.";
                 ViewBag.username = userName;
                 return View();
-
             }
         }
         

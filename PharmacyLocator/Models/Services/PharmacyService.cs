@@ -11,6 +11,17 @@ namespace PharmacyLocator.Models.Services
             _context = context;
         }
 
+        public async Task<bool> Login(string email, string password)
+        {
+            var pharmacy = await _context.pharmacies.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            return pharmacy != null;
+        }
+        public async Task<long> getIdFromEmail(string email)
+        {
+            var pharmacy = await _context.pharmacies.FirstOrDefaultAsync(x => x.Email == email);
+            return pharmacy.Id;
+        }
+        
         public async Task<bool> NameExist(Pharmacy pharma, bool notthis = false)
         {
             if (notthis) {

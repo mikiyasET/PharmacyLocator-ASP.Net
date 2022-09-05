@@ -13,7 +13,7 @@ const locationIcon = $('#locationLink i:last-child')
 const pharmacyIcon = $('#pharmacyLink i:last-child')
 const storeIcon = $('#storeLink i:last-child')
 const path = "admin/";
-
+const pharma_path = "pharmacy/"
 medicineTab.hide()
 locationTab.hide()
 pharmacyTab.hide()
@@ -46,6 +46,18 @@ function loadPage(location, data = '', id = '') {
                 }
             });
             break;
+        case 'dashboard_pharma':
+            console.log("Dashboard")
+            request = $.ajax({
+                url: pharma_path + "dashboard",
+                type: "GET",
+                dataType: "html",
+                data: {
+                    func: data,
+                    id: id
+                }
+            });
+            break
         case 'medicine':
             request = $.ajax({
                 url: path + "medicine",
@@ -101,9 +113,27 @@ function loadPage(location, data = '', id = '') {
                 }
             });
             break;
+        case 'leadBoard_pharma':
+            request = $.ajax({
+                url: pharma_path + "leadBoard",
+                type: "GET",
+                dataType: "html",
+                data: {
+                    func: data,
+                    id: id
+                }
+            });
+            break;
         case 'password':
             request = $.ajax({
                 url: path + "ChangePassword",
+                type: "GET",
+                dataType: "html",
+            });
+            break;
+        case 'password_pharma':
+            request = $.ajax({
+                url: pharma_path + "ChangePassword",
                 type: "GET",
                 dataType: "html",
             });

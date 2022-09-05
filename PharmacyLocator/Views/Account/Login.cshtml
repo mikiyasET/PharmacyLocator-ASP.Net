@@ -1,5 +1,7 @@
 ﻿@{
     Layout = "";
+    var login = @ViewData["ReturnUrl"].ToString().Substring(1) == "" ? "User" : @ViewData["ReturnUrl"].ToString().Substring(1);
+    var loginas = ViewData["ReturnUrl"].ToString().ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +20,7 @@
         <div class="content">
             <div id="login-box">
                 <form asp-controller="account" asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
-                    <h2 class="text-center">Login</h2>
+                    <h2 class="text-center">Login | @login</h2>
                     <p class="text-center">
                         @ViewBag.errorMessage
                     </p>
@@ -32,6 +34,27 @@
                     </div>
                     <div class="d-grid gap-2">
                         <button class="btn ca-btn mt-3" type="submit" name="login">Login</button>
+                    </div>
+                    <div class="mb-3 mt-2 text-center text-muted">
+                        Login as 
+                        
+                        @if (loginas == "/admin")
+                        {
+                            @Html.ActionLink("pharmacy","","pharmacy",null,new { @class = "newLink" })
+                            <span> or </span>
+                            @Html.ActionLink("user","","user",null,new { @class = "newLink" })
+                        }
+                        else if (loginas == "/pharmacy")
+                        {
+                            @Html.ActionLink("admin","","admin",null,new { @class = "newLink" } )
+                            <span> or </span>
+                            @Html.ActionLink("user","","user",null,new { @class = "newLink" })
+                        }else {
+
+                            @Html.ActionLink("admin","","admin",null,new { @class = "newLink" })
+                            <span> or </span>
+                            @Html.ActionLink("pharmacy","","pharmacy",null,new { @class = "newLink" })
+                        }
                     </div>
                 </form>
             </div>

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Record>
+@using PharmacyLocator.Models.Services
+@{
+    Layout = "";
+}
+@inject IMedicineService _medservice
+<p id="main-title">Top searched medicines</p>
+<div id="main-content">
+    <div class="mt-2">
+        <table id="pharmacyTable" class="table table-borderless table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Medicine Name</th>
+                    <th scope="col">Searched</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int counter = 0;
+                }
+                @foreach(var record in Model) {
+                    counter++;
+                    <tr>
+                        <th scope="row">@counter</th>
+                        <td>@record.Medicine.Name</td>
+                        <td>@record.Count Times</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#pharmacyTable').DataTable();
+    });
+</script>

@@ -404,6 +404,10 @@ nav {
     padding: 0 4rem;
 }
 
-    .dash-box span, .dash-box p {
-        font-size: 5rem;
-    }
+.dash-box span, .dash-box p {
+    font-size: 5rem;
+}
+
+.newLink {
+    color: white !important;
+}
