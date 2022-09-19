@@ -11,14 +11,16 @@ namespace PharmacyLocator.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         
-        [ForeignKey("Medicine")]
         [Required]
-        public long? MedicineId { get; set; }
+        [ForeignKey("Medicine")]
+        public long MedicineId { get; set; }
+
         public virtual Medicine Medicine { get; set; }
 
-        [ForeignKey("User")]
         [Required]
-        public long? UserId { get; set; }
+        [ForeignKey("User")]
+        public long UserId { get; set; }
+        
         public virtual User User { get; set; }
 
         [DefaultValue(1)]

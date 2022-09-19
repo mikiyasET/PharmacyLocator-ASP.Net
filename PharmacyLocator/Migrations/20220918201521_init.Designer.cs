@@ -12,7 +12,7 @@ using PharmacyLocator.Models;
 namespace PharmacyLocator.Migrations
 {
     [DbContext(typeof(PharmaDbContext))]
-    [Migration("20220905123327_init")]
+    [Migration("20220918201521_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,8 +126,7 @@ namespace PharmacyLocator.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("LocationId")
-                        .IsRequired()
+                    b.Property<long>("LocationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("MapLink")
@@ -168,12 +167,10 @@ namespace PharmacyLocator.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<long?>("MedicineId")
-                        .IsRequired()
+                    b.Property<long>("MedicineId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("UserId")
-                        .IsRequired()
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -223,10 +220,6 @@ namespace PharmacyLocator.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

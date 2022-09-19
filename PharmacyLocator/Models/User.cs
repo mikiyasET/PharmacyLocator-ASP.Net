@@ -27,8 +27,5 @@ namespace PharmacyLocator.Models
         [RegularExpression(@"^([a-zA-Z0-9@*#]{8,15})$", ErrorMessage = "Password must contain: Minimum 8 characters atleast 1 UpperCase Alphabet, 1 LowerCase Alphabet, 1 Number and 1 Special Character")]
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
-        
-        [DefaultValue(1)]
-        public string Status { get; set; }
     }
 }

@@ -14,14 +14,25 @@ namespace PharmacyLocator.Models.Services
         {
             if (notthis)
             {
-                var medicine = await _context.locations.FirstOrDefaultAsync(x => x.Name == med.Name && x.Id != med.Id);
+                var medicine = await _context.medicines.FirstOrDefaultAsync(x => x.Name == med.Name && x.Id != med.Id);
                 return medicine == null ? false : true;
             }
             else
             {
-                var medicine = await _context.locations.FirstOrDefaultAsync(x => x.Name == med.Name);
+                var medicine = await _context.medicines.FirstOrDefaultAsync(x => x.Name == med.Name);
                 return medicine == null ? false : true;
             }
+        }
+        public async Task<IEnumerable<Medicine>> getLikeName(string q)
+        {
+            var quary = from med in _context.medicines where med.Name.Contains(q) select med;
+            IEnumerable<Medicine> medicines = await quary.ToListAsync().ConfigureAwait(false);
+            return medicines;
+        }
+        public async Task<long> getIdByName(string q)
+        {
+            Medicine medicine = await _context.medicines.FirstOrDefaultAsync(med => med.Name == q);
+            return medicine.Id;
         }
     }
 }

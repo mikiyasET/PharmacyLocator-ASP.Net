@@ -1,1 +1,23 @@
-﻿
+﻿@using PharmacyLocator.Models.Services
+@inject IStoreService _service
+@inject IMedicineService _medservice
+@inject IPharmacyService _pharmaservice
+@inject ILocationService _locservice
+<div class="wrap">
+    <div class="search">
+        <input type="search" class="searchTerm" list="medicinesHint" placeholder="Search ..." aria-label="Search" onkeyup="showHint(this.value)">
+        <button type="submit" class="searchButton" onclick="search()">
+        <datalist id="medicinesHint">
+        </datalist>
+            <div class="row">
+                <div class="col-md-3">
+                    <i class="material-icons" style="margin: 3px 0px 0px 5px;display: inline-block;">search</i>
+                </div>
+                <div class="col-md-6 d-xxl-block d-xl-block d-sm-none d-md-none d-lg-block d-none">Search</div>
+            </div>
+        </button>
+    </div>
+</div>
+<div class="mt-5" id="search-result">
+    
+</div>

@@ -11,11 +11,12 @@ namespace PharmacyLocator.Models
         public long Id { get; set; }
 
         [ForeignKey("Medicine")]
-        public long? MedicineId { get; set; }
+        public long MedicineId { get; set; }
         public virtual Medicine Medicine { get; set; }
 
         [ForeignKey("Pharmacy")]
-        public long? PharmacyId { get; set; }
+        public long PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
+
     }
 }

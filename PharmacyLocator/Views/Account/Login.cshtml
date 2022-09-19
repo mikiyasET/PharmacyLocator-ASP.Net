@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "";
-    var login = @ViewData["ReturnUrl"].ToString().Substring(1) == "" ? "User" : @ViewData["ReturnUrl"].ToString().Substring(1);
+    var login = ViewData["ReturnUrl"].ToString().Substring(1) == "" ? "User" : ViewData["ReturnUrl"].ToString().Substring(1);
     var loginas = ViewData["ReturnUrl"].ToString().ToLower();
 }
 <!DOCTYPE html>
@@ -50,10 +50,7 @@
                             <span> or </span>
                             @Html.ActionLink("user","","user",null,new { @class = "newLink" })
                         }else {
-
-                            @Html.ActionLink("admin","","admin",null,new { @class = "newLink" })
-                            <span> or </span>
-                            @Html.ActionLink("pharmacy","","pharmacy",null,new { @class = "newLink" })
+                            @Html.ActionLink("SignUp","SignUp","account",null,new { @class = "newLink" })
                         }
                     </div>
                 </form>

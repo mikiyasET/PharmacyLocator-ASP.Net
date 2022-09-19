@@ -14,6 +14,7 @@ const pharmacyIcon = $('#pharmacyLink i:last-child')
 const storeIcon = $('#storeLink i:last-child')
 const path = "admin/";
 const pharma_path = "pharmacy/"
+const user_path = "user/"
 medicineTab.hide()
 locationTab.hide()
 pharmacyTab.hide()
@@ -138,6 +139,20 @@ function loadPage(location, data = '', id = '') {
                 dataType: "html",
             });
             break;
+        case 'password_user':
+            request = $.ajax({
+                url: user_path + "ChangePassword",
+                type: "GET",
+                dataType: "html",
+            });
+            break;
+        case 'search':
+            request = $.ajax({
+                url: user_path + "SearchPage",
+                type: "GET",
+                dataType: "html",
+            });
+            break;
         case 'logout':
             request = $.ajax({
                 url: path + "logout",
@@ -185,6 +200,9 @@ function add(to) {
             break
         case 'pharma_password':
             passwordBtn('pharmacy')
+            break;
+        case 'user_password':
+            passwordBtn('user')
             break;
         default:
             Toast.fire({
@@ -623,8 +641,20 @@ function pharmacyBtn(data = 'add', id = null) {
     }
 }
 function passwordBtn(to = 'admin') {
-    let mypath = to == 'admin' ? path : pharma_path;
-    let load = to == 'admin' ? 'password' : 'password_pharma';
+    let mypath = ""
+    let load = ""
+    if (to == 'admin') {
+        mypath = path;
+        load = 'password'
+    } else if (to == 'pharmacy') {
+        mypath = pharma_path
+        load = 'password_pharma';
+    } else {
+        mypath = user_path;
+        load = 'password_user';
+    }
+
+
     let oldPass = $("input[name='current']").val();
     let newPass = $("input[name='new']").val();
     let rePass = $("input[name='confirm']").val();
@@ -758,6 +788,50 @@ function hideLoading() {
     $('#mainpage').removeClass('loading')
 }
 
+function search() {
+    query = $("input[type='search']").val();
+    showLoading();
+    let request = $.ajax({
+        url: user_path + "search",
+        type: "GET",
+        data: {
+            query: query
+        },
+        dataType: "text"
+    });
+    request.done(function (output) {
+        $("#search-result").html(output);
+        if (output.search('<input type="hidden" value="exists">') != -1) {
+            $('#medDetails').removeClass('d-none')
+            $('#medDetails').attr('data-med', query)
+        } else {
+            $('#medDetails').removeClass('d-none')
+            $('#medDetails').addClass('d-none')
+        }
+    });
+    request.fail(function (jqXHR, textStatus) {
+        Toast.fire({
+            icon: 'error',
+            title: 'Connection error'
+        })
+        hideLoading()
+    });
+    hideLoading();
+}
+function showHint(str) {
+    if (str.length == 0) {
+        document.getElementById("medicinesHint").innerHTML = "";
+        return;
+    }
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("medicinesHint").innerHTML = this.responseText;
+        }
+    }
+    xmlhttp.open("GET", user_path + "medicinesHint?q=" + str, true);
+    xmlhttp.send();
+}
 
 function collapseAll($except = null) {
     switch ($except) {
@@ -877,13 +951,11 @@ $('.main').on('click', function (e) {
 })
 
 const validURL = (str) => {
-    var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-    return !!pattern.test(str);
+    return String(str)
+        .toLowerCase()
+        .match(
+            /^https?\:\/\/(www\.)?google\.(com|fr|de)\/maps\b/
+        );
 }
 const validateEmail = (email) => {
     return String(email)

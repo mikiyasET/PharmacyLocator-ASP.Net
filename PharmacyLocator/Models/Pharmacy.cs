@@ -34,12 +34,14 @@ namespace PharmacyLocator.Models
         [StringLength(13,MinimumLength = 10)]
         [Display(Name = "Phone")]
         public string? Phone { get; set; }
-        [ForeignKey("Location")]
-        public long? LocationId { get; set; }
-        public virtual Location Location { get; set; }
 
+
+        [ForeignKey("Location")] 
+        public long LocationId { get; set; }
+        public virtual Location Location { get; set; }
+        
         [ForeignKey("Admin")]
-        public long? AddBy { get; set; }
+        public long AddBy { get; set; }
         public virtual Admin Admin { get; set; }
     }
 }

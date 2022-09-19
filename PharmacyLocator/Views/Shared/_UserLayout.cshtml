@@ -6,6 +6,7 @@
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.0/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
@@ -19,17 +20,12 @@
             </div>
             <ul id="aside-menu">
                 <li>
-                    <a href="javascript:void(0)" id="dashboardLink" class="list-link active" onclick="loadPage('dashboard')">
-                        <i class="material-icons-outlined">grid_view</i> <span>Dashboard</span>
+                    <a href="javascript:void(0)" id="dashboardLink" class="list-link active" onclick="loadPage('search')">
+                        <i class="material-icons-outlined">search</i> <span>Search</span>
                     </a>
                 </li>
-
-
                 <li>
-                    <a href="javascript:void(0)" id="leadBoarddLink" class="list-link" onclick="loadPage('leadBoard')"><i class="material-icons-outlined">leaderboard</i> <span>LeaderBoard</span></a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)" id="settingsLink" class="list-link" onclick="loadPage('password')"><i class="material-icons-outlined">vpn_key</i> <span>Change Password</span></a>
+                    <a href="javascript:void(0)" id="settingsLink" class="list-link" onclick="loadPage('password_user')"><i class="material-icons-outlined">vpn_key</i> <span>Change Password</span></a>
                 </li>
                 <li>
                     <a href="../account/logout" id="settingsLink" class="list-link"><i class="material-icons-outlined">logout</i> <span>Logout</span></a>
@@ -52,6 +48,12 @@
             </nav>
             <div class="main" id="mainpage">
                 @RenderBody()
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="medinfo" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modalSet">
             </div>
         </div>
     </div>

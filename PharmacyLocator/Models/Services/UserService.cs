@@ -20,5 +20,11 @@ namespace PharmacyLocator.Models.Services
             var user = await _context.users.FirstOrDefaultAsync(x => x.Username == username);
             return user.Id;
         }
+        public async Task<bool> checkUsername(string username)
+        {
+            var user = await _context.users.FirstOrDefaultAsync(x => x.Username == username);
+            return user != null;
+        }
+
     }
 }

@@ -18,7 +18,7 @@ namespace PharmacyLocator.Models
         public string Name { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
-
+        
         [ForeignKey("Admin")]
         public long AddBy { get; set;}
         public virtual Admin Admin { get; set; }

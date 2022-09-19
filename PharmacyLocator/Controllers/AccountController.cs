@@ -28,6 +28,7 @@ namespace PharmacyLocator.Controllers
         {
             return RedirectToAction("Login");
         }
+
         [Route("Login")]
         public IActionResult Login(string returnUrl = null)
         {
@@ -40,6 +41,65 @@ namespace PharmacyLocator.Controllers
             {
                 return View();
             }
+        }
+        
+        [Route("SignUp")]
+        public IActionResult SignUpForUsers() {
+            return View();
+        }
+
+        [Route("SignUp")]
+        [HttpPost]
+        public async Task<IActionResult> SignUpForUsers(User user,string cpassword)
+        {
+            try
+            {
+                if (!(await _userservice.checkUsername(user.Username)))
+                {
+                    if (user.Password.Length >= 8 && cpassword.Length >= 8)
+                    {
+                        if (user.Password == cpassword)
+                        {
+                            if (user.Name.Length > 3)
+                            {
+                                await _userservice.AddAsync(user);
+                                return RedirectToAction("Login");
+                            }
+                            else
+                            {
+                                ViewBag.errorMessage = "Please enter a valid name";
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.errorMessage = "Password doesn't match";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.errorMessage = "Password length must be 8 or more characters";
+                    }
+                }
+                else
+                {
+                    ViewBag.errorMessage = "username already taken";
+                }
+
+                ViewBag.name = user.Name;
+                ViewBag.username = user.Username;
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Object reference not set to an instance of an object.")
+                {
+                    ViewBag.errorMessage = "Error! There is an empty field.";
+                }else
+                {
+                    ViewBag.errorMessage = "Unexpected error please try again later " + e;
+                }
+            }
+
+            return View();
         }
 
         private async Task<bool> ValidateLogin(string userName, string password, string who)

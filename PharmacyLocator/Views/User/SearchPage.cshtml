@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "";
+}
+@using PharmacyLocator.Models.Services
+@inject IStoreService _service
+@inject IMedicineService _medservice
+@inject IPharmacyService _pharmaservice
+@inject ILocationService _locservice
+<div class="wrap">
+    <div class="search">
+        <input type="search" class="searchTerm" list="medicinesHint" placeholder="Search ..." aria-label="Search" onkeyup="showHint(this.value)">
+        <button type="submit" class="searchButton" onclick="search()">
+            <datalist id="medicinesHint">
+            </datalist>
+            <div class="row">
+                <div class="col-md-3">
+                    <i class="material-icons" style="margin: 3px 0px 0px 5px;display: inline-block;">search</i>
+                </div>
+                <div class="col-md-6 d-xxl-block d-xl-block d-sm-none d-md-none d-lg-block d-none">Search</div>
+            </div>
+        </button>
+    </div>
+</div>
+<div class="mt-5" id="search-result">
+    <div class="row">
+        @{
+            IEnumerable<Store> medicines = await _service.GetAllAsync();
+        }
+        @foreach (Store item in medicines)
+        {
+           /* Medicine medicine = await _medservice.GetByIdAsync(long.Parse(item.MedicineId.ToString()));
+            Pharmacy pharmacy = await _pharmaservice.GetByIdAsync(long.Parse(item.PharmacyId.ToString()));
+            Location location = await _locservice.GetByIdAsync(pharmacy.LocationId);
+            <div class="col-md-4">
+                <div class="card bg-new text-white" title="This pharmacy have the medicine you're looking for.">
+                    <img src="~/images/pharmacies/@pharmacy.Image" class="card-img-top" alt="@medicine.Name Image" height='300px'>
+                    <div class="card-body">
+                        <h5 class="card-title">@pharmacy.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@location.Name</h6>
+                        <p class="card-text">@medicine.Description</p>
+                        <a class='showmap card-link text-decoration-none' data-bs-toggle="modal" data-bs-target="#info" data-link='@pharmacy.MapLink'>Google Map</a>
+                    </div>
+                </div>
+            </div>*/
+        }
+
+    </div>
+</div>
