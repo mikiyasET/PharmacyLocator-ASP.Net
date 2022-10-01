@@ -6,6 +6,9 @@ const storeTab = $('#storeTab')
 const medicineLink = $('#medicineLink')
 const locationLink = $('#locationLink')
 const pharmacyLink = $('#pharmacyLink')
+const requestedLink = $('#RequestedLink');
+const requestLink = $('#requestLink');
+const leaderboard = $('#leadBoarddLink');
 const storeLink = $('#storeLink')
 
 const medicineIcon = $('#medicineLink i:last-child')
@@ -15,6 +18,7 @@ const storeIcon = $('#storeLink i:last-child')
 const path = "admin/";
 const pharma_path = "pharmacy/"
 const user_path = "user/"
+
 medicineTab.hide()
 locationTab.hide()
 pharmacyTab.hide()
@@ -40,11 +44,7 @@ function loadPage(location, data = '', id = '') {
             request = $.ajax({
                 url: path + "dashboard",
                 type: "GET",
-                dataType: "html",
-                data: {
-                    func: data,
-                    id: id
-                }
+                dataType: "html"
             });
             break;
         case 'dashboard_pharma':
@@ -52,11 +52,7 @@ function loadPage(location, data = '', id = '') {
             request = $.ajax({
                 url: pharma_path + "dashboard",
                 type: "GET",
-                dataType: "html",
-                data: {
-                    func: data,
-                    id: id
-                }
+                dataType: "html"
             });
             break
         case 'medicine':
@@ -107,22 +103,28 @@ function loadPage(location, data = '', id = '') {
             request = $.ajax({
                 url: path + "leadBoard",
                 type: "GET",
-                dataType: "html",
-                data: {
-                    func: data,
-                    id: id
-                }
+                dataType: "html"
             });
             break;
         case 'leadBoard_pharma':
             request = $.ajax({
                 url: pharma_path + "leadBoard",
                 type: "GET",
-                dataType: "html",
-                data: {
-                    func: data,
-                    id: id
-                }
+                dataType: "html"
+            });
+            break;
+        case 'request_pharma':
+            request = $.ajax({
+                url: pharma_path + "requests",
+                type: "GET",
+                dataType: "html"
+            });
+            break;
+        case 'requested':
+            request = $.ajax({
+                url: path + "requested",
+                type: "GET",
+                dataType: "html"
             });
             break;
         case 'password':
@@ -195,6 +197,9 @@ function add(to) {
         case 'pharmacy':
             pharmacyBtn()
             break
+        case 'request':
+            requestBtn();
+            break;
         case 'password':
             passwordBtn()
             break
@@ -291,6 +296,65 @@ function remove(to, id) {
                         Toast.fire({
                             icon: 'error',
                             title: 'Not deleted, try again later!'
+                        })
+                        break;
+                    case 'unknownID':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'something went wrong, refresh the page!'
+                        })
+                        break;
+                }
+                hideLoading()
+            });
+            request.fail(function (jqXHR, textStatus) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Request failed: ' + textStatus
+                })
+                hideLoading()
+            });
+        }
+        else {
+            hideLoading()
+        }
+    })
+}
+function RequestSeen(id) {
+    showLoading()
+   
+    Swal.fire({
+        title: 'Mark as Seen?',
+        text: "You have seen this request!",
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, I did !'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let request = $.ajax({
+                url: path + "RequestSeen",
+                type: "DELETE",
+                data: {
+                    id: id
+                },
+                dataType: "text"
+            });
+            request.done(function (output) {
+                console.log(output);
+                switch (output) {
+                    case 'success':
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Marked as seen'
+                        })
+                        loadPage('requested')
+                        break;
+                    case 'failure':
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Not Seen, try again later!'
                         })
                         break;
                     case 'unknownID':
@@ -723,6 +787,57 @@ function passwordBtn(to = 'admin') {
         })
     }
 }
+function requestBtn() {
+    showLoading()
+    let name = $("input[name='name']").val();
+    let request = $.ajax({
+        url: pharma_path + "RequestMedicine",
+        type: "POST",
+        data: {
+            name: name
+        },
+        dataType: "text"
+    });
+    if (name != '') {
+        request.done(function (output) {
+            console.log(output);
+            switch (output) {
+                case 'success':
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Medicine requested successfully'
+                    })
+                    loadPage('request_pharma')
+                    break;
+                case 'NameExist':
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Another Pharmacy already request this medicine'
+                    })
+                    break;
+                default:
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Internal Error'
+                    })
+            }
+            hideLoading()
+        });
+        request.fail(function (jqXHR, textStatus) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Connection Error'
+            })
+            hideLoading()
+        });
+    } else {
+        Toast.fire({
+            icon: 'error',
+            title: 'Empty field'
+        })
+        hideLoading()
+    }
+}
 function addStore(id) {
     showLoading()
     Swal.fire({
@@ -801,7 +916,7 @@ function search() {
     });
     request.done(function (output) {
         $("#search-result").html(output);
-        if (output.search('<input type="hidden" value="exists">') != -1) {
+        if (output.search("<input type='hidden' value='exists'>") != -1) {
             $('#medDetails').removeClass('d-none')
             $('#medDetails').attr('data-med', query)
         } else {
@@ -892,7 +1007,27 @@ links.forEach((e) => {
         e.className += ' active'
     })
 })
-
+$('#medDetails').on('click', (e) => {
+    let request = $.ajax({
+        url: user_path + "info",
+        type: "POST",
+        dataType: "html",
+        data: {
+            query: e.currentTarget.attributes['data-med'].nodeValue
+        }
+    });
+    console.log(request);
+    request.done(function (msg) {
+        console.log("Bitch Done");
+        $("#modalSet").html(msg);
+    });
+    request.fail(function (jqXHR, textStatus) {
+        Toast.fire({
+            icon: 'error',
+            title: 'Request failed: ' + textStatus
+        })
+    });
+})
 $('a').on('click', function (e) {
     const current = e.currentTarget.id;
     switch (current) {
@@ -917,6 +1052,15 @@ $('a').on('click', function (e) {
             storeIcon.text() === "expand_more" ? storeIcon.text('expand_less') : storeIcon.text("expand_more")
             break
         case 'leaderboardLink':
+            collapseAll()
+            break
+        case 'leadBoarddLink':
+            collapseAll()
+            break
+        case 'RequestedLink':
+            collapseAll()
+            break
+        case 'requestLink':
             collapseAll()
             break
         case 'dashboardLink':

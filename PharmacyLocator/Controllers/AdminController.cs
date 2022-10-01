@@ -22,8 +22,9 @@ namespace PharmacyLocator.Controllers
         private readonly IPharmacyService _pharmaservice;
         private readonly IUserService _userservice;
         private readonly IRecordService _recordservice;
+        private readonly IRequestService _requestservice;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce,IWebHostEnvironment webHostEnvironment, IRecordService recordService)
+        public AdminController(IAdminService service, IMedicineService medsevice, ILocationService locsevice,IPharmacyService pharmaService,IUserService userserivce,IWebHostEnvironment webHostEnvironment, IRecordService recordService, IRequestService requestService)
         {
             _service = service;
             _medservice = medsevice;
@@ -32,6 +33,7 @@ namespace PharmacyLocator.Controllers
             _userservice = userserivce;
             _webHostEnvironment = webHostEnvironment;
             _recordservice = recordService;
+            _requestservice = requestService;
         }
         
         public async Task<IActionResult> Index()
@@ -128,8 +130,14 @@ namespace PharmacyLocator.Controllers
             }
         }
 
+        public async Task<IActionResult> Requested()
+        {
+            var requests = await _requestservice.GetAllAsync();
+            return View(requests);
+        }
+
         public async Task<IActionResult> LeadBoard() { 
-            IEnumerable<Record> record = await _recordservice.GetAllAsync();
+            IEnumerable<Record> record = await _recordservice.getRecords();
             return View(record);
         }
 
@@ -439,6 +447,27 @@ namespace PharmacyLocator.Controllers
             }catch
             {
                 return "failure";
+            }
+        }
+        [HttpDelete]
+        public async Task<string> RequestSeen(long id)
+        {
+            try
+            {
+                Requests requests = await _requestservice.GetByIdAsync(id);
+                if (requests != null)
+                {
+                    await _requestservice.DeleteAsync(id);
+                    return "success";
+                }
+                else
+                {
+                    return "unknownID";
+                } 
+            }
+            catch (Exception e)
+            {
+                return "failure: " + id;
             }
         }
     }

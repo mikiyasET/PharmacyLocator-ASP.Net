@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
 using PharmacyLocator.Models;
 using PharmacyLocator.Models.Services;
 using System.Data;
@@ -15,9 +16,10 @@ namespace PharmacyLocator.Controllers
         private readonly IPharmacyService _pharmaservice;
         private readonly ILocationService _locservice;
         private readonly IUserService _userservice;
+        private readonly IRecordService _recordService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(IMedicineService medservice, IStoreService storeService,IPharmacyService pharmacyService, ILocationService locationService,IUserService userservice, IWebHostEnvironment webHostEnvironment)
+        public UserController(IMedicineService medservice, IStoreService storeService,IPharmacyService pharmacyService, ILocationService locationService,IUserService userservice, IWebHostEnvironment webHostEnvironment,IRecordService recordService)
         {
             _medservice = medservice;
             _storeservice = storeService;
@@ -25,6 +27,7 @@ namespace PharmacyLocator.Controllers
             _locservice = locationService;
             _userservice = userservice;
             _webHostEnvironment = webHostEnvironment;
+            _recordService = recordService;
         }
         public IActionResult Index()
         {
@@ -54,18 +57,42 @@ namespace PharmacyLocator.Controllers
             if (await _medservice.NameExist(m))
             {
                 long id = await _medservice.getIdByName(query);
+                _UserId = await _userservice.getIdFromUsername(User.Claims.ToList()[0].Value);
+                try
+                {
+                    Record record = new Record();
+                    record.MedicineId = id;
+                    record.UserId = _UserId;
+                    var rec = await _recordService.checkRecord(_UserId, id);
+                    if ((rec) != null)
+                    {
+                        record.Id = rec.Id;
+                        record.Count = rec.Count + 1;
+                        await _recordService.UpdateAsync(record);
+                    }
+                    else
+                    {
+                        record.Count = 1;
+                        await _recordService.AddAsync(record);
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                }
+
                 IEnumerable<Store> medicines = await _storeservice.getByMedID(id);
                 if (medicines.Count() != 0)
                 {
+                    response += "<input type='hidden' value='exists'>";
                     foreach (Store item in medicines)
                     {
                         Medicine medicine = await _medservice.GetByIdAsync(long.Parse(item.MedicineId.ToString()));
                         Pharmacy pharmacy = await _pharmaservice.GetByIdAsync(long.Parse(item.PharmacyId.ToString()));
                         Location location = await _locservice.GetByIdAsync(pharmacy.LocationId);
-
-                        response += "<div class=\"col-md-4\">\r\n                <div class=\"card bg-new text-white\" title=\"This pharmacy have the medicine you're looking for.\">\r\n                    <img src=\"images/pharmacies/" + pharmacy.Image + "\" class=\"card-img-top\" alt=\"" + medicine.Name + " Image\" height='300px'>\r\n                    <div class=\"card-body\">\r\n                        <h5 class=\"card-title\">" + pharmacy.Name + "</h5>\r\n                        <h6 class=\"card-subtitle mb-2 text-muted\">" + location.Name + "</h6>\r\n                        <p class=\"card-text\">" + medicine.Description + "</p>\r\n                        <a class='showmap card-link text-decoration-none' data-bs-toggle=\"modal\" data-bs-target=\"#info\" data-link='" + pharmacy.MapLink + "'>Google Map</a>\r\n                    </div>\r\n                </div>\r\n            </div>";
+                        response += "<div class='col-md-4'><div class='card bg-new text-white' title='This pharmacy have the medicine you\'re looking for.'><img src='images/pharmacies/" + pharmacy.Image + "' class='card-img-top' alt='" + medicine.Name + " Image' height='300px'><div class='card-body'><h5 class='card-title'>" + pharmacy.Name + "</h5><h6 class='card-subtitle mb-2 text-muted'>" + location.Name + "</h6><p class='card-text'>" + pharmacy.Description + "</p><a class='showmap card-link text-decoration-none' data-bs-toggle='modal' data-bs-target='#info' data-link='" + pharmacy.MapLink + "'>Google Map</a></div></div></div>";
                     }
-                    response += "<div class=\"modal fade\" id=\"info\" tabindex=\"-1\" aria-labelledby=\"detailsModalLabel\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-lg\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <h5 class=\"modal-title text-center\" id=\"detailsModalLabel\">Pharmacy Location</h5>\r\n                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                <iframe id=\"map-link\" src=\"\" width=\"100%\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n<script>\r\n    $('.showmap').on('click', (e) => {\r\n        $(\"#map-link\").attr('src',e.currentTarget.attributes['data-link'].nodeValue)\r\n    })\r\n</script>";
+                    response += "<div class='modal fade' id='info' tabindex='-1' aria-labelledby='detailsModalLabel' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><h5 class='modal-title text-center' id='detailsModalLabel'>Pharmacy Location</h5><button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div><div class='modal-body'><iframe id='map-link' src='' width='100%' height='450' style='border:0;' allowfullscreen='' loading='lazy'></iframe></div><div class='modal-footer'><button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button></div></div></div></div><script>$('.showmap').on('click', (e) => {$(\"#map-link\").attr('src',e.currentTarget.attributes['data-link'].nodeValue)})</script>";
                 }
                 else
                 {
@@ -78,7 +105,20 @@ namespace PharmacyLocator.Controllers
            
             return response;
         }
+        public async Task<string> info(string query)
+        {
+            Medicine m = new Medicine();
+            m.Name = query;
+            string response = "";
 
+            if (await _medservice.NameExist(m))
+            {
+                long id = await _medservice.getIdByName(query);
+                Medicine medicine = await _medservice.GetByIdAsync(id);
+                response = "<div class='modal-header'><h5 class='modal-title text-center' id='detailsModalLabel'>"+medicine.Name+"</h5><button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div><div class='modal-body'><img src='images/medicines/"+medicine.Image+"' width='100%' height='450' alt='"+medicine.Name+" Image'><pre class='mt-3' style='white-space: pre-wrap;'>"+medicine.Description+"</pre></div><div class='modal-footer'><button type='button' class='btn btn-secondary' data-bs-dismiss='modal' > Close</button></div>";
+            }
+            return response;
+        }
         public async Task<IActionResult> ChangePassword()
         {
             _UserId = await _userservice.getIdFromUsername(User.Claims.ToList()[0].Value);

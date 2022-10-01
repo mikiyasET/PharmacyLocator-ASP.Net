@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "";
+}
+@model PharmacyLocator.Models.Requests
+
+<p id="main-title">Request A Medicine</p>
+<div id="main-content">
+    <div class="mb-3">
+        <label asp-for="Name" for="RequestInput" class="form-label"></label>
+        <input asp-for="Name" type="text" name="name" class="form-control" id="RequestInput" tabindex="1" placeholder="Name">
+    </div>
+    <div class="d-grid gap-2">
+        <button class="btn ca-btn mt-3" type="button" onclick="add('request')">Add</button>
+    </div>
+</div>

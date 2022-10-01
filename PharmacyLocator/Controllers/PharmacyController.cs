@@ -18,7 +18,8 @@ namespace PharmacyLocator.Controllers
         private readonly ILocationService _locservice;
         private readonly IUserService _userservice;
         private readonly IStoreService _storeService;
-        public PharmacyController(IMedicineService medicineService,IPharmacyService pharmacyService,IRecordService recordService,IWebHostEnvironment webHostEnvironment,ILocationService locationService,IUserService userService,IStoreService storeService) { 
+        private readonly IRequestService _requestService;
+        public PharmacyController(IMedicineService medicineService,IPharmacyService pharmacyService,IRecordService recordService,IWebHostEnvironment webHostEnvironment,ILocationService locationService,IUserService userService,IStoreService storeService,IRequestService requestService) { 
             _medservice = medicineService;
             _pharmaservice = pharmacyService;
             _recordservice = recordService;
@@ -26,6 +27,7 @@ namespace PharmacyLocator.Controllers
             _storeService = storeService;
             _userservice = userService;
             _webHostEnvironment = webHostEnvironment;
+            _requestService = requestService;
         }
 
         public async Task<IActionResult> Index()
@@ -85,7 +87,7 @@ namespace PharmacyLocator.Controllers
                 }
             }catch (Exception e)
             {
-                return "failure: " + e;
+                return "failure";
             }
         }
         [HttpDelete]
@@ -109,10 +111,34 @@ namespace PharmacyLocator.Controllers
         }
         public async Task<IActionResult> LeadBoard()
         {
-            IEnumerable<Record> record = await _recordservice.GetAllAsync();
+            IEnumerable<Record> record = await _recordservice.getRecords();
             return View(record);
         }
-
+        public IActionResult Requests()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<string> RequestMedicine(String name)
+        {
+            try { 
+                if (!(await _requestService.NameExist(name)))
+                {
+                    Requests request = new Requests();
+                    request.Name = name;
+                    await _requestService.AddAsync(request);
+                    return "success";
+                }
+                else
+                {
+                    return "NameExist";
+                }
+            }
+            catch (Exception e)
+            {
+                return "failure";
+            }
+        }
         public async Task<IActionResult> ChangePassword()
         {
             _pharmaId = await _pharmaservice.getIdFromEmail(User.Claims.ToList()[0].Value);

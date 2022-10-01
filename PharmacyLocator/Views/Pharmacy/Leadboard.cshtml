@@ -19,11 +19,13 @@
                 @{
                     int counter = 0;
                 }
-                @foreach(var record in Model) {
+                @foreach (var record in Model)
+                {
                     counter++;
+                    Medicine med = await _medservice.GetByIdAsync(record.MedicineId);
                     <tr>
                         <th scope="row">@counter</th>
-                        <td>@record.Medicine.Name</td>
+                        <td>@med.Name</td>
                         <td>@record.Count Times</td>
                     </tr>
                 }

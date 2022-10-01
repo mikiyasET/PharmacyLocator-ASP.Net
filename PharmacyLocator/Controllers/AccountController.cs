@@ -178,10 +178,21 @@ namespace PharmacyLocator.Controllers
         }
         
         [Route("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(string type)
         {
             await HttpContext.SignOutAsync();
-            return Redirect("/admin");
+            if (type == "admin")
+            {
+                return Redirect("/admin");
+            }
+            else if (type == "pharmacy")
+            {
+                return Redirect("/pharmacy");
+            }
+            else
+            {
+                return Redirect("/user");
+            }
         }
 
     }
