@@ -7,7 +7,8 @@
 @{
     Pharmacy pharma = await _pharmaservice.GetByIdAsync(ViewBag.id);
     var name = "";
-    string mapLink = "";
+    double latitude = 0;
+    double longitude = 0;
     string desc = "";
     long locationid = 0;
     string email = "";
@@ -16,7 +17,8 @@
     if (pharma != null)
     {
         name = pharma.Name;
-        mapLink = pharma.MapLink;
+        latitude = pharma.Latitude;
+        longitude = pharma.Longitude;
         img = pharma.Image;
         desc = pharma.Description;
         locationid = pharma.LocationId;
@@ -38,18 +40,22 @@
                     <input type="text" name="name" class="form-control" id="LocationInput" tabindex="1" placeholder="Name" value="@name" @status>
                 </div>
                 <div class="mb-3">
-                    <label for="MapInput" class="form-label">Map Link</label>
-                    <input type="url" name="mapLink" class="form-control" id="MapInput" tabindex="2" placeholder="Google Map Link" value="@mapLink" @status>
-                </div>
-                <div class="mb-3">
                     <label for="decInput" class="form-label">Pharmacy Description</label>
-                    <textarea name="description" class="form-control" id="decInput" rows="10" tabindex="3" placeholder="About the pharmacy and address ..." @status >@desc</textarea>
+                    <textarea name="description" class="form-control" id="decInput" rows="6" tabindex="2" placeholder="About the pharmacy and address ..." @status >@desc</textarea>
                 </div>
+            <div class="mb-3">
+                <label for="LatInput" class="form-label">Latitude</label>
+                <input type="text" name="latitude" class="form-control" id="LatInput" tabindex="3" placeholder="Latitude" value="@latitude" @status>
+            </div>
+            <div class="mb-3">
+                <label for="LonInput" class="form-label">Longitude</label>
+                <input type="text" name="longitude" class="form-control" id="LonInput" tabindex="4" placeholder="Longitude" value="@longitude" @status>
+            </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="LocationSelectInput" class="form-label">Location</label>
-                    <select class="form-select" name="location" id="LocationSelectInput" tabindex="4" @status>
+                    <select class="form-select" name="location" id="LocationSelectInput" tabindex="5" @status>
                             <option selected disabled>Choose ...</option>
                            <option selected disabled>Choose ...</option>
                         @{
@@ -64,16 +70,17 @@
                 </div>
                 <div class="mb-3">
                     <label for="EmailInput" class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" id="EmailInput" tabindex="5" placeholder="Email" value="@email" @status>
+                    <input type="email" name="email" class="form-control" id="EmailInput" tabindex="6" placeholder="Email" value="@email" @status>
                 </div>
                 <div class="mb-3">
                     <img src="~/images/pharmacies/@img" alt="" style="width: auto;height: 15.5rem;">
-                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="6">
+                    <input type="file" name="image" class="form-control" id="imgInput" tabindex="7">
                 </div>
+                
             </div>
         </div>
         <div class="d-grid gap-2">
-            <button class="btn ca-btn mt-3" type="button" onclick="modify('pharmacy','@ViewBag.id')" @status>Edit</button>
+        <button class="btn ca-btn mt-3" tabindex="8" type="button" onclick="modify('pharmacy','@ViewBag.id')" @status>Edit</button>
         </div>
         <div class="mt-5">
             <table id="pharmacyTable" class="table table-borderless table-hover">

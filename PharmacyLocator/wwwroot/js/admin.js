@@ -6,9 +6,6 @@ const storeTab = $('#storeTab')
 const medicineLink = $('#medicineLink')
 const locationLink = $('#locationLink')
 const pharmacyLink = $('#pharmacyLink')
-const requestedLink = $('#RequestedLink');
-const requestLink = $('#requestLink');
-const leaderboard = $('#leadBoarddLink');
 const storeLink = $('#storeLink')
 
 const medicineIcon = $('#medicineLink i:last-child')
@@ -18,7 +15,6 @@ const storeIcon = $('#storeLink i:last-child')
 const path = "admin/";
 const pharma_path = "pharmacy/"
 const user_path = "user/"
-
 medicineTab.hide()
 locationTab.hide()
 pharmacyTab.hide()
@@ -590,7 +586,8 @@ function locationBtn(data = 'add', id = null) {
 function pharmacyBtn(data = 'add', id = null) {
     showLoading()
     let name = $("input[name='name']").val() ?? '';
-    let mapLink = $("input[name='mapLink']").val() ?? '';
+    let latitude = $("input[name='latitude']").val() ?? '';
+    let longitude = $("input[name='longitude']").val() ?? '';
     let location = $("select[name='location']").val() ?? '';
     let email = $("input[name='email']").val() ?? '';
     let password = $("input[name='password']").val() ?? '';
@@ -599,7 +596,8 @@ function pharmacyBtn(data = 'add', id = null) {
     var formData = new FormData();
     formData.append('Id', id)
     formData.append('Name', name)
-    formData.append('MapLink', mapLink)
+    formData.append('Latitude', latitude)
+    formData.append('Longitude', longitude)
     formData.append('LocationId', parseFloat(location))
     formData.append('Email', email)
     formData.append('Password', password)
@@ -607,9 +605,9 @@ function pharmacyBtn(data = 'add', id = null) {
     formData.append('Image', $("input[name='image']")[0].files[0])
     formData.append('submit', data === 'add' ? 'addPharmacy' : 'editPharmacy')
     if (validateEmail(email)) {
-        if (validURL(mapLink)) {
+        if (validURL(latitude, longitude)) {
             if ((password == cpassword) || data == 'edit') {
-                if (name != '' && mapLink != '' && location != '' && email != '' && ((password != '' && cpassword != '') || data == 'edit')) {
+                if (name != '' && latitude != '' && longitude != '' && location != '' && email != '' && ((password != '' && cpassword != '') || data == 'edit')) {
                     let request = $.ajax({
                         url: path + "ModPharmacy",
                         type: "POST",
@@ -692,7 +690,7 @@ function pharmacyBtn(data = 'add', id = null) {
         } else {
             Toast.fire({
                 icon: 'error',
-                title: 'Map Link not valid'
+                title: 'The Latitude or Longitude is not a valid format'
             })
             hideLoading()
         }
@@ -1054,9 +1052,6 @@ $('a').on('click', function (e) {
         case 'leaderboardLink':
             collapseAll()
             break
-        case 'leadBoarddLink':
-            collapseAll()
-            break
         case 'RequestedLink':
             collapseAll()
             break
@@ -1094,11 +1089,11 @@ $('.main').on('click', function (e) {
     }
 })
 
-const validURL = (str) => {
-    return String(str)
+const validURL = (lat,lon) => {
+    return String(lat+","+lon)
         .toLowerCase()
         .match(
-            /^https?\:\/\/(www\.)?google\.(com|fr|de)\/maps\b/
+            /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/
         );
 }
 const validateEmail = (email) => {

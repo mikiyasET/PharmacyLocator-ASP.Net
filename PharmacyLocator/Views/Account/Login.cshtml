@@ -20,14 +20,19 @@
         <div class="content">
             <div id="login-box">
                 <form asp-controller="account" asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
-                    <h2 class="text-center">Login | @login</h2>
+                    <h2 class="text-center">Login | @char.ToUpper(login[0])@login.Substring(1)</h2>
                     <p class="text-center">
                         @ViewBag.errorMessage
                     </p>
                     <div class="mb-3">
-                        <label for="usernameInput" class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" id="usernameInput" tabindex="1" value="@ViewBag.username">
-                    </div>
+                        @if (loginas == "/pharmacy") {
+                            <label for="usernameInput" class="form-label">Email</label>
+                            <input type="text" name="username" class="form-control" id="usernameInput" tabindex="1" value="@ViewBag.username">
+                        }else {
+                            <label for="usernameInput" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" id="usernameInput" tabindex="1" value="@ViewBag.username">
+                        }
+                        </div>
                     <div class="mb-3">
                         <label for="passwordInput" class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" id="passwordInput" tabindex="2">

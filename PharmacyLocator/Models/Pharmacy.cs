@@ -27,7 +27,8 @@ namespace PharmacyLocator.Models
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
-        public string? MapLink { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public string? Image { get; set; }
         public string? Description { get; set; }
 

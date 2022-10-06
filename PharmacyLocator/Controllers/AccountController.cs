@@ -165,7 +165,14 @@ namespace PharmacyLocator.Controllers
                 }
             }else
             {
-                ViewBag.errorMessage = "Invalid username or password.";
+                if (returnUrl == "/pharmacy")
+                {
+                    ViewBag.errorMessage = "Invalid Email or password.";
+                }else
+                {
+                    ViewBag.errorMessage = "Invalid username or password.";
+                }
+                
                 ViewBag.username = userName;
                 return View();
             }
