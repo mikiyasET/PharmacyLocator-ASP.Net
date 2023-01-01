@@ -30,7 +30,7 @@ namespace PharmacyLocator.Controllers
         }
 
         [Route("Login")]
-        public IActionResult Login(string? returnUrl = null)
+        public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (string.IsNullOrEmpty(returnUrl))
@@ -179,7 +179,7 @@ namespace PharmacyLocator.Controllers
         }
         
         [Route("denied")]
-        public IActionResult AccessDenied(string? returnUrl = null)
+        public IActionResult AccessDenied(string returnUrl = null)
         {
             return View();
         }
