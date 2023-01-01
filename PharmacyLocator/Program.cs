@@ -81,8 +81,8 @@ var mysqlPort = builder.Configuration["MYSQLPORT"];
 var mysqlUser = builder.Configuration["MYSQLUSER"];
 var mysqlPassword = builder.Configuration["MYSQLPASSWORD"];
 var mysqlDatabase = builder.Configuration["MYSQLDATABASE"];
-var url = $"Server={mysqlHost};Database={mysqlDatabase};Port={mysqlPort};user={mysqlUser};password={mysqlPassword}";
-// var url = builder.Configuration.GetConnectionString("mysqlConnection");
+// var url = $"Server={mysqlHost};Database={mysqlDatabase};Port={mysqlPort};user={mysqlUser};password={mysqlPassword}";
+var url = builder.Configuration.GetConnectionString("mysqlConnection");
 
 
 builder.Services.AddDbContext<PharmaDbContext>(options => {

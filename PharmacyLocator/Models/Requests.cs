@@ -16,7 +16,7 @@ namespace PharmacyLocator.Models
         [Required(ErrorMessage = "Medicine name is required")]
         [Display(Name = "Medicine Name")]
         [Column(TypeName = "nvarchar(100)")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
     }
 }

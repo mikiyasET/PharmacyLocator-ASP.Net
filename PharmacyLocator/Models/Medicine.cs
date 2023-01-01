@@ -16,7 +16,7 @@ namespace PharmacyLocator.Models
         [Display(Name = "Name")]
         [StringLength(75, ErrorMessage = "Medicine Name can not be more than 75 characters")]
         [Column(TypeName = "nvarchar(100)")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Column(TypeName = "nvarchar(100)")]
         public string? Description { get; set; }
@@ -26,6 +26,6 @@ namespace PharmacyLocator.Models
         
         [ForeignKey("Admin")]
         public long AddBy { get; set;}
-        public virtual Admin Admin { get; set; }
+        public virtual Admin? Admin { get; set; }
     }
 }
