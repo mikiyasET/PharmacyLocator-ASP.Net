@@ -14,6 +14,7 @@ namespace PharmacyLocator.Models
 
         [Required(ErrorMessage = "Location name is required")]
         [Display(Name = "Name")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
     }
 }

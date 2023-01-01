@@ -17,17 +17,20 @@ namespace PharmacyLocator.Models
 
         [Required(ErrorMessage = "Admin name is required")]
         [Display(Name = "Name")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
         
         [Display(Name = "Username")]
-        [StringLength(450, ErrorMessage = "Username charcters length must be with in 4 - 20 letters.",MinimumLength = 255)]
+        [StringLength(100, ErrorMessage = "Username charcters length must be with in 4 - 20 letters.",MinimumLength = 255)]
         [Required(ErrorMessage = "Username is required")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Username { get; set; }
 
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         [RegularExpression(@"^([a-zA-Z0-9@*#]{8,15})$", ErrorMessage = "Password must contain: Minimum 8 characters atleast 1 UpperCase Alphabet, 1 LowerCase Alphabet, 1 Number and 1 Special Character")]
         [Required(ErrorMessage = "Password is required")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
     }
 }

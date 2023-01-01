@@ -15,25 +15,32 @@ namespace PharmacyLocator.Models
 
         [Required(ErrorMessage = "Pharmacy name is required")]
         [Display(Name = "Name")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
 
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email is required")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Email { get; set; }
 
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         [RegularExpression(@"^([a-zA-Z0-9@*#]{8,15})$", ErrorMessage = "Password must contain: Minimum 8 characters atleast 1 UpperCase Alphabet, 1 LowerCase Alphabet, 1 Number and 1 Special Character")]
         [Required(ErrorMessage = "Password is required")]
+        [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
         public string? Image { get; set; }
+        [Column(TypeName = "nvarchar(100)")]
         public string? Description { get; set; }
 
         [StringLength(13,MinimumLength = 10)]
         [Display(Name = "Phone")]
+        [Column(TypeName = "nvarchar(100)")]
         public string? Phone { get; set; }
 
 

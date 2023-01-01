@@ -11,16 +11,25 @@ using Microsoft.IdentityModel.Tokens;
 using PharmacyLocator;
 using PharmacyLocator.Models;
 using PharmacyLocator.Models.Services;
+using System.Diagnostics;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+var port = builder.Configuration["PORT"];
+Debug.Print($"port: {port}");
+builder.WebHost.UseUrls($"http://0.0.0.0:{port};http://localhost:3000");
+
+
 ConfigurationManager Configuration = builder.Configuration;
 // Add services to the container.
-builder.Services.AddDbContext<PharmaDbContext>(options => {
+/*builder.Services.AddDbContext<PharmaDbContext>(options => {
     options.UseSqlServer(Configuration.GetConnectionString("DbContext"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-});
+});*/
+
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IConfigureOptions<CookieAuthenticationOptions>, ConfigureMyCookie>();
@@ -66,6 +75,19 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
+var mysqlHost = builder.Configuration["MYSQLHOST"];
+var mysqlPort = builder.Configuration["MYSQLPORT"];
+var mysqlUser = builder.Configuration["MYSQLUSER"];
+var mysqlPassword = builder.Configuration["MYSQLPASSWORD"];
+var mysqlDatabase = builder.Configuration["MYSQLDATABASE"];
+var url = $"Server={mysqlHost};Database={mysqlDatabase};Port={mysqlPort};user={mysqlUser};password={mysqlPassword}";
+// var url = builder.Configuration.GetConnectionString("mysqlConnection");
+
+
+builder.Services.AddDbContext<PharmaDbContext>(options => {
+    options.UseMySql(url, ServerVersion.AutoDetect(url));
+});
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
